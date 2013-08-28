@@ -1,0 +1,36 @@
+<script type="text/ng-template" id="resources/tpl/stepSelectSitie.html">
+ <div ng-controller="sitiesCtrl"> 
+	<div>
+		<p>Quantity: &nbsp;&nbsp;</p>
+		<input type="text" ng-model="quantity" />
+	</div>
+	<div>
+		<div style="float: left;padding-right: 20px;">
+			<div id="divLeft" ng-style="{'width': sizeLeft}">
+				<span class="ng-scope" ng-repeat="sitie in sitiesLeft">
+					<img ng-src="{{sitie.url}}" width="20" height="20"
+					ng-click="updateSitie(sitie)">
+				</span>
+			</div>
+		</div>
+		<div style="float: left;padding-right: 20px;">
+			<div id="divLeft1" ng-style="{'width': sizeCenter}">
+				<span class="ng-scope" ng-repeat="sitie in sitiesCenter">
+					<img ng-src="{{sitie.url}}" width="20" height="20" 
+					ng-click="updateSitie(sitie)">
+				</span>
+			</div>
+		</div>
+		<div style="float: left;padding-right: 20px;">
+			<div id="divLeft2" ng-style="{'width': sizeRight}">
+				<span class="ng-scope" ng-repeat="sitie in sitiesRight">
+					<img ng-src="{{sitie.url}}" width="20" height="20"
+					ng-click="updateSitie(sitie)">
+				</span>
+			</div>
+		</div>
+	</div>
+	 <td><a class="btn" ng-click="fin1(sitiesSelected)">NEXT</a></td>
+</div>
+</script> 
+

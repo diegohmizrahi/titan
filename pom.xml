@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.gl</groupId>
+	<artifactId>cinemark-angular</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>cinemark-angular Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	
+	<properties>
+		<org.springframework-version>3.2.3.RELEASE</org.springframework-version> <!--  Antes  3.1.2.RELEASE Nuevo 3.2.3.RELEASE-->
+		<jackson.version>2.2.1</jackson.version> <!-- Antes 1.6.0 Nuevo 2.2.1 -->
+		<jackson.version.codehaus>1.9.13</jackson.version.codehaus> <!-- Antes 1.6.0, no andaba fecha y paso a 1.9.13 -->
+		
+	</properties>
+		
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>cinemark-angular</finalName>
+		<plugins>
+			<plugin>
+				<groupId>com.samaxes.maven</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>default-minify</id>
+						<phase>process-resources</phase>
+						<configuration>
+
+							<charset>utf-8</charset>
+							<!-- <jsEngine>closure</jsEngine> -->
+							<jsSourceDir>js</jsSourceDir>
+							<jsSourceIncludes>
+								<jsSourceInclude>**</jsSourceInclude>
+							</jsSourceIncludes>
+							<webappSourceDir>${basedir}/src/main</webappSourceDir>
+							<webappTargetDir>${basedir}/src/main/webapp/resources</webappTargetDir>
+
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

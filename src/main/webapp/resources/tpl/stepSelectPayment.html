@@ -1,0 +1,29 @@
+<script type="text/ng-template" id="resources/tpl/stepSelectPayment.html">
+<div ng-controller="paymentCtrl"> 
+<label>luego habria que armar el total, y la forma de pago </label>
+
+			<div >
+				<select id="stMovie"
+					ng-model="filter.movieSelected"
+					ng-disabled="!filter.theaterSelected"
+					ng-change="updateMovieSelected(filter.movieSelected)"
+					ng-options="movie.name for movie in movies"></select>
+				<div class="divInfoMovie">
+					<label class="labelMovie">Forma de pagos:</label> 
+					<textarea class="xxlarge" name="textarea" rows="3" disabled
+					></textarea>
+				</div>
+				<div class="divInfoMovie">
+					<label class="labelMovie">xxxx:</label> 
+					<input type="text" ng-model="movie.actors" disabled
+					/>
+				</div>
+				<div class="divInfoMovie">
+					<label class="labelMovie">Forma Pago:</label> 
+					<input type="text" ng-model="formaPago"/>
+				</div>
+			</div>
+			</div>
+ <td><a class="btn" ng-click="end(formaPago)">END</a></td>
+</div>
+</script>
