@@ -24,16 +24,16 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 				"pueblo y en el camino convertirse en un verdadero equipo. Pero, hay en el futbol lugar para los milagros.";
 	    
 		$scope.filter.movieSelected = false;
-		$scope.filter.timeSelected = false;
+		$scope.filter.showTimeSelected = false;
 	};
 
 	$scope.updateMovieSelected = function(movieSelected){
 		if(movieSelected.id == 1 || movieSelected.id == 3){
-			$scope.times = [{"name": "miercoles 20:20"},{"name":"miercoles 22"}];
+			$scope.showTimes = [{"name": "miercoles 20:20"},{"name":"miercoles 22"}];
 		} else {
-			$scope.times = [{"name": "jueves 20:20"},{"name":"sabado 22"}];
+			$scope.showTimes = [{"name": "jueves 20:20"},{"name":"sabado 22"}];
 		}
-		$scope.filter.timeSelected = false;
+		$scope.filter.showTimeSelected = false;
 //		movieService.getTime($scope.filter.theaterSelected,$scope.filter.movieSelected).then(function(){
 //			
 //		});

@@ -24,11 +24,11 @@
 			</div>
 			<div class="clearfix">
 				<label for="normalSelect">Time:</label> 
-				<select id="stTime"
-					ng-model="filter.timeSelected"
+				<select id="stShowTimes"
+					ng-model="filter.showTimeSelected"
 					ng-disabled="!(filter.theaterSelected && filter.movieSelected)"
-					ng-change="updateTimeSelected(filter.timeSelected)"
-					ng-options="time.name for time in times">
+					ng-change="updateShowTimeSelected(filter.showTimeSelected)"
+					ng-options="showTime.name for showTime in showTimes">
 				<option style="display:none" value="">Select Time</option>	
 				</select>
 			</div>
@@ -38,6 +38,6 @@
 			</div>
 		</fieldset>
 		 <td><a class="btn" ng-href="#/xxx/?movie=1&theater=1&showTime=1"
-		 ng-show="filter.theaterSelected && filter.movieSelected && filter.timeSelected">BUY</a></td>
+		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected">BUY</a></td>
 	</form>
 </div>

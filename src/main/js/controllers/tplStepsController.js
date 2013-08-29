@@ -4,6 +4,7 @@ app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routePara
 	
 	var sitiesSelectedA;
 	$scope.filter = {};
+	
 	//$scope.filter.theaterSelected = false;
 	$scope.templates =
         [ { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html', state: true}
@@ -12,7 +13,7 @@ app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routePara
 	
 	$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
 	$scope.movies = [{"id":1,"name": "Que paso ayer 1"},{"id":2,"name":"Metegol"}];
-	$scope.times = [{"id":1,"name": "miercoles 20:20"},{"id":2,"name":"miercoles 22"}];
+	$scope.showTimes = [{"id":1,"name": "miercoles 20:20"},{"id":2,"name":"miercoles 22"}];
 	
 	if($routeParams.movie && $routeParams.theater && $routeParams.showTime) {
 		
@@ -30,9 +31,9 @@ app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routePara
 			}
 		}
 		
-		for(var i=0;i<$scope.times.length;i++){
-			if($scope.times[i].id == $routeParams.showTime){
-				$scope.filter.timeSelected = $scope.times[0];
+		for(var i=0;i<$scope.showTimes.length;i++){
+			if($scope.showTimes[i].id == $routeParams.showTime){
+				$scope.filter.showTimeSelected = $scope.showTimes[0];
 				break;
 			}
 		}
@@ -55,17 +56,30 @@ app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routePara
 	
 	$scope.fin1 = function(sitiesSelected){
 		//console.log(sitiesSelected);
-		var test = " Theater: " + $scope.filter.theaterSelected.name + " Movie: " + $scope.filter.movieSelected.name + " Time: " +
-		$scope.filter.timeSelected.name + " Sities: " ;
+//		var test = " Theater: " + $scope.filter.theaterSelected.name + " Movie: " + $scope.filter.movieSelected.name + " Time: " +
+//		$scope.filter.showTimeSelected.name + " Sities: " ;
+//		for(var i=0;i<sitiesSelected.length;i++){
+//			test = test + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
+//		}
+//		alert(test);
+//		sitiesSelectedA = sitiesSelected;
+		
+		$scope.sitiesSelectedText = "";
+		$scope.quantitySelected = sitiesSelected.length;
 		for(var i=0;i<sitiesSelected.length;i++){
-			test = test + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
+			$scope.sitiesSelectedText = $scope.sitiesSelectedText + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
 		}
-		alert(test);
-		sitiesSelectedA = sitiesSelected;
 		$scope.templates[2].state = true;
 	};
 	
-	$scope.end = function(formaPagos){
-		console.log(formaPagos);
+	$scope.end = function(methodPaymentSelected){
+		
+		alert("Method Payment: " + methodPaymentSelected.name);
 	};
+	
+	$scope.updateQuantitySelected = function(quantitySelected){
+		$scope.templates[2].state = false;
+	};
+	
 });
+
