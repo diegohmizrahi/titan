@@ -1,4 +1,4 @@
-var app = angular.module('cinemarkApp',['stepSelectPaymentController','tplStepsController','stepSelectMovieController','tplReservationMovieController','moviesController','detailMovieController','stepSelectSitieController'], function ($routeProvider, $locationProvider, $httpProvider) {
+var app = angular.module('cinemarkApp',['utilsDirective','stepSelectPaymentController','tplStepsController','stepSelectMovieController','tplReservationMovieController','moviesController','detailMovieController','stepSelectSitieController'], function ($routeProvider, $locationProvider, $httpProvider) {
 
     var interceptor = ['$rootScope', '$q', function (scope, $q) {
 

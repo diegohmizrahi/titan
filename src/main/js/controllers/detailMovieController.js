@@ -8,6 +8,7 @@ app.moviesModule.controller('detailMovieCtrl', function($rootScope,$routeParams,
 //		});
 //	};
 	
+	$scope.cantidad = 3;
 	if($routeParams.idMovie != 0) {
 //		$scope.movie = {"name": "Que paso ayer 1", "description": "esta es una breve descripcion de que se trata la pelicula",
 //				"url":"http://imdb-poster.b0.upaiyun.com/000/268/380.jpg!cover?_upt=22d38ae31377737331"};
@@ -22,4 +23,6 @@ app.moviesModule.controller('detailMovieCtrl', function($rootScope,$routeParams,
 		    "genre": "Comedy"
 		};
 	}
+	
 });
+

@@ -67,7 +67,8 @@ app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routePara
 		$scope.sitiesSelectedText = "";
 		$scope.quantitySelected = sitiesSelected.length;
 		for(var i=0;i<sitiesSelected.length;i++){
-			$scope.sitiesSelectedText = $scope.sitiesSelectedText + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
+			$scope.sitiesSelectedText = $scope.sitiesSelectedText + sitiesSelected[i].nameSection  + ": " +  "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ") ";
+					
 		}
 		$scope.templates[2].state = true;
 	};
