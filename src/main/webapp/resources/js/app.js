@@ -37,14 +37,24 @@ var app = angular.module('cinemarkApp',['utilsDirective','stepSelectPaymentContr
 app.config(function ($routeProvider,$locationProvider) {
    //$locationProvider.html5Mode(true);
     $routeProvider
+	    .when('/index', 
+	   	{
+	    	controller: 'reservationCtrl',
+	    	templateUrl: './resources/tpl/tplReservationMovie.html'
+	    })
         .when('/movies',
         {
             controller: 'moviesCtrl',
             templateUrl: './resources/tpl/gridMovies.html'
         })
-        .when('/xxx',
+//        .when('/xxx',
+//        {
+//            controller: 'reservationdddCtrl',
+//            templateUrl: './resources/tpl/tplSteps.html'
+//        })
+        .when('/steps',
         {
-            controller: 'reservationdddCtrl',
+            controller: 'stepsCtrl',
             templateUrl: './resources/tpl/tplSteps.html'
         })
         .when('/movies/:idMovie',
@@ -62,10 +72,5 @@ app.config(function ($routeProvider,$locationProvider) {
         	controller: 'reservationMovieCtrl',
         	templateUrl: './resources/tpl/stepSelectMovie.html'
         })
-        .when('/todo', //este es el de los combo box
-        		{
-        	controller: 'reservationCtrl',
-        	templateUrl: './resources/tpl/tplReservationMovie.html'
-        })
-        .otherwise({ redirectTo: '/todo' });
+        .otherwise({ redirectTo: '/index' });
 });

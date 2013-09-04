@@ -1,38 +1,28 @@
 app.moviesModule = angular.module('stepSelectSitieController',[]);
 
 app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
-	
-//	 $scope.chair = 1;
-	$scope.sections = new Array();
-	$scope.sizeScreen = 0;
-	$scope.occupiedSession = 0;
+
 	$scope.quantity = 1;
-	//$scope.quantitySelected = {"id":0,"number":0};
-	$scope.sitiesSelected = new Array();
-	//$scope.quantities = [{"id":1,"number":1},{"id":2,"number":2},{"id":3,"number":3},{"id":4,"number":4}];
 	var occupiedOther = "OTHER", occupiedMy = "MY", free = "FREE";  
 	
 	/**
 	 * Create areas of theater
 	 */
-	$scope.createSections = function(){
-     	var sities ={"movie" : { "id":2304, "title": "lalala" }, "theater": {"id": 30,"name": "cinemark palmares" },"showTime": {"schedule": "17:00","id": 234, "left": [{"row": 20,"column": 4}],"center": [
-	{"row": 20,"column": 15,"occupied": [{"row": 1,"column": 4},{"row": 1,"column": 5},{"row": 6,"column": 7},{"row": 3,"column": 2}, {"row": 5,"column": 4}    ]}],"right": [{"row": 20,"column": 3,"occupied": [{"row": 1,"column": 3}]}]}};
-
-		//movieService.getSities().then(function(sities){
-			
-     	renderTypeSection(sities.showTime.left[0], "LEFT");
-     	renderTypeSection(sities.showTime.center[0], "CENTER");
-     	renderTypeSection(sities.showTime.right[0], "RIGHT");
+	$rootScope.createSections = function(sections){
+		
+		$scope.sections = new Array();
+		$scope.sizeScreen = 0;
+		$scope.occupiedSession = 0;
+		$scope.quantity = 1;
+		$scope.sitiesSelected = new Array();
+		$scope.mapSitiesSelected = {};
+		renderTypeSection(sections.left[0], "LEFT");
+     	renderTypeSection(sections.center[0], "CENTER");
+     	renderTypeSection(sections.right[0], "RIGHT");
  
      	$scope.sizeScreen = $scope.sizeScreen + ($scope.sections.length * 20 ) - 20 ;
-
 	};
-	
-//	$scope.fin1 = function(sitiesSelected){
-//		console.log(sitiesSelected);
-//	};
-//	
+
 	/**
 	 * Updated site occupied for purchase
 	 */
@@ -42,11 +32,9 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			$scope.occupiedSession -= 1;
 			sitie.occupied = free;
 			sitie.url = "resources/img/seat_gray.gif";
+			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection];
 			return;
 		}
-//		if($scope.quantitySelected.number <= $scope.occupiedSession){
-//			return;
-//		}
 		if($scope.quantity <= $scope.occupiedSession){
 			return;
 		}
@@ -55,18 +43,12 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			sitie.occupied = occupiedMy;
 			sitie.url = "resources/img/seat_green.gif";
 			$scope.sitiesSelected.push(sitie);
+			$scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection] = sitie;
 			return;
 		}
 		
 	};
-	
-//	$scope.updateSpinner = function(value){
-//		$scope.quantity = value;
-//	};
-	
-	    $scope.saveRatingToServer = function(rating) {
-	      //$window.alert('Rating selected - ' + rating);
-	    };
+
 	/**
 	 * Render section in the teather
 	 */
@@ -111,5 +93,4 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 		$scope.sections.push(section);
 	}
 	
-	$scope.createSections();
 });

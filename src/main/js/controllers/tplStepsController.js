@@ -1,86 +1,137 @@
 app.moviesModule = angular.module('tplStepsController',[]);
 
-app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
-	
-	var sitiesSelectedA;
-	$scope.filter = {};
-	
-	//$scope.filter.theaterSelected = false;
+
+app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
+
 	$scope.templates =
         [ { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html', state: true}
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
         , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}];
+	$scope.labelButton = "NEXT";
+	$scope.filter = {};
 	
-	$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
-	$scope.movies = [{"id":1,"name": "Que paso ayer 1"},{"id":2,"name":"Metegol"}];
-	$scope.showTimes = [{"id":1,"name": "miercoles 20:20"},{"id":2,"name":"miercoles 22"}];
+	//Only if the url does not have parameters
+	if (!$routeParams.movie) { 
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+		});
+	};
 	
+	
+	//Running when called through the browser url with parameters.
+    //Make the combo box with data
 	if($routeParams.movie && $routeParams.theater && $routeParams.showTime) {
 		
-		for(var i=0;i<$scope.theaters.length;i++){
-			if($scope.theaters[i].id == $routeParams.theater){
-				$scope.filter.theaterSelected = $scope.theaters[0];
-				break;
+		$scope.filter = {};
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+			
+			for(var i=0;i<$scope.theaters.length;i++){
+				if($scope.theaters[i].id == $routeParams.theater){
+					$scope.filter.theaterSelected = $scope.theaters[i];
+					break;
+				}
 			}
-		}
+			theaterService.getMovies($routeParams.theater).then(function(movies){
+				$scope.movies = movies;
+				
+				for(var i=0;i<$scope.movies.length;i++){
+					if($scope.movies[i].id == $routeParams.movie){
+						$scope.filter.movieSelected = $scope.movies[i];
+						$scope.description = $scope.movies[i].description;
+						break;
+					}
+				}
+
+				theaterService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
+					
+					$scope.showTimes = new Array();
+					
+					for(var i=0;i<showTimes.length;i++){
+						$scope.showTimes.push(showTimes[i].showTime);
+					}
+					
+					for(var i=0;i<$scope.showTimes.length;i++){
+						if($scope.showTimes[i].id == $routeParams.showTime){
+							$scope.filter.showTimeSelected = $scope.showTimes[i];
+							break;
+						}
+					}
+				});
+			});
+		});
+	}
+	
+	/**
+	 * Replace and navigate url browser
+	 */
+	$scope.navigateUrl = function(){
+		$scope.templates[1].state = true;
+		$rootScope.createSections($scope.filter.showTimeSelected);
+	};
+
+	/**
+	 * Get Movies for theater selected
+	 */
+	$scope.updateTheaterSelected = function(){
+		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
+			$scope.movies = movies;
+		});
+		$scope.filter.movieSelected = false;
+		$scope.filter.showTimeSelected = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
+	};
+	
+	/**
+	 * Get showTimes for theater and movie selected
+	 */
+	$scope.updateMovieSelected = function(){
+		
+		var theaterId = $scope.filter.theaterSelected.id;
+		var movieId = $scope.filter.movieSelected.id;
+
+		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+			
+			$scope.showTimes = new Array();
+			
+			for(var i=0;i<showTimes.length;i++){
+				$scope.showTimes.push(showTimes[i].showTime);
+			}
+			
+		});
 
 		for(var i=0;i<$scope.movies.length;i++){
-			if($scope.movies[i].id == $routeParams.movie){
-				$scope.filter.movieSelected = $scope.movies[0];
+			if(movieId == $scope.movies[i].id){
+				$scope.description = $scope.movies[i].description;
 				break;
 			}
 		}
 		
-		for(var i=0;i<$scope.showTimes.length;i++){
-			if($scope.showTimes[i].id == $routeParams.showTime){
-				$scope.filter.showTimeSelected = $scope.showTimes[0];
-				break;
-			}
-		}
-		
-		$scope.description = "Amadeo vive en un pueblo pequeno y anonimo. Trabaja en un bar, juega al metegol mejor que nadie " +
-		"y esta enamorado de Laura, aunque ella no lo sabe. Su rutina sencilla se desmorona cuando Parpados, un joven del " +
-		"pueblo convertido en el mejor futbolista del mundo, vuelve dispuesto a vengarse de la unica derrota que sufrio " +
-		"en su vida. Con el metegol, el bar y hasta su alma destruidas, Amadeo descubre algo magico: los jugadores de su " +
-		"querido metegol hablan y mucho. Juntos se embarcaran en un viaje lleno de aventuras para salvar a Laura y al " +
-		"pueblo y en el camino convertirse en un verdadero equipo. Pero, hay en el futbol lugar para los milagros.";
-
-		$scope.templates[1].state = true;
+		$scope.filter.showTimeSelected = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
 	};
 	
-	$scope.fin = function() {
-		console.log($rootScope);
-		console.log($scope);
-		console.log("ddddd");
-	};
-	
-	$scope.fin1 = function(sitiesSelected){
-		//console.log(sitiesSelected);
-//		var test = " Theater: " + $scope.filter.theaterSelected.name + " Movie: " + $scope.filter.movieSelected.name + " Time: " +
-//		$scope.filter.showTimeSelected.name + " Sities: " ;
-//		for(var i=0;i<sitiesSelected.length;i++){
-//			test = test + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
-//		}
-//		alert(test);
-//		sitiesSelectedA = sitiesSelected;
-		
-		$scope.sitiesSelectedText = "";
-		$scope.quantitySelected = sitiesSelected.length;
-		for(var i=0;i<sitiesSelected.length;i++){
-			$scope.sitiesSelectedText = $scope.sitiesSelectedText + sitiesSelected[i].nameSection  + ": " +  "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ") ";
-					
+	/**
+	 * Next step is Select Method Payment
+	 */
+	$scope.nextStep = function(sitiesSelected){
+		$scope.filter.sitiesSelectedText = "";
+		$scope.filter.quantitySelected = 0;
+		for (var key in sitiesSelected) {
+			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
+				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
+			$scope.filter.quantitySelected++;
 		}
 		$scope.templates[2].state = true;
 	};
 	
-	$scope.end = function(methodPaymentSelected){
-		
-		alert("Method Payment: " + methodPaymentSelected.name);
-	};
-	
-	$scope.updateQuantitySelected = function(quantitySelected){
-		$scope.templates[2].state = false;
+	/**
+	 * Last step is Payment
+	 */
+	$scope.lastStep = function(info) {
+		$rootScope.open(info);
 	};
 	
 });
-

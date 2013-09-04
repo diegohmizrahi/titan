@@ -1,11 +1,12 @@
-<script type="text/ng-template" id="resources/tpl/stepSelectSitie.html">
-<div ng-controller="sitiesCtrl"> 
+<!-- <script type="text/ng-template" id="resources/tpl/stepSelectSitie.html"> -->
+ <div ng-controller="sitiesCtrl"> <!--  ng-controller="sitiesCtrl"--> 
 	
+	<legend>Step 2: Select Site</legend>
 	<div>
-		<div><label class="labelQuantity">{{quantity}}</label></div>
-		<div make-chairs chair-value="quantity" max="10" ></div>
+<!-- 		<div><label class="labelQuantity">{{quantity}}</label></div> -->
+		<div make-chairs chair-value="quantity" max="4" ></div>
 	</div>
-	<div style="height: 70px;">
+	<div class="divImgCinema">
 		<img alt="" src="./resources/img/screen.png" ng-style="{'width': sizeScreen}">
 	</div>
 	<div style="float: left;padding-right: 20px;" ng-repeat="section in sections">
@@ -17,17 +18,7 @@
 		</div>
 	</div>
 	<div>
-		<a class="btn" ng-click="fin1(sitiesSelected)" ng-show="quantity == occupiedSession">NEXT</a>
+		<a class="btn btn-success" ng-click="nextStep(mapSitiesSelected)" ng-show="quantity == occupiedSession">NEXT</a>
 	</div>
 </div>
- </script> 
-
-<!-- <div class="divInfoMovie"> -->
-<!-- 		<label class="labelMovie">Quantity:</label>  -->
-<!-- 		<select id="stQuantity" -->
-<!-- 			ng-model="quantitySelected" -->
-<!-- 			ng-change="updateQuantitySelected(quantitySelected)" -->
-<!-- 			ng-options="quantity.number for quantity in quantities"> -->
-<!-- 		<option style="display:none" value="">Select Method Payment</option>	 -->
-<!-- 		</select> -->
-<!-- 	</div> -->
+<!--  </script>   -->

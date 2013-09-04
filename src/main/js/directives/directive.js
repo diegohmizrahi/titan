@@ -4,8 +4,10 @@ app.directivesModule = angular.module('utilsDirective',[])
     return {
       restrict: 'A',
       template: '<ul class="chair">' +
+      			  '<li class="chairValue">{{chairValue}}</li>' +
                   '<li ng-repeat="chair in chairs" ng-class="chair" ng-click="toggle($index)">' +
                   '</li>' +
+                  
                 '</ul>',
       scope: {
     	chairValue: '=',
@@ -14,7 +16,7 @@ app.directivesModule = angular.module('utilsDirective',[])
         
       },
       link: function (scope, elem, attrs) {
-
+    	  
         var updateChairs = function() {
           scope.chairs = [];
           for (var  i = 0; i < scope.max; i++) {
@@ -23,21 +25,23 @@ app.directivesModule = angular.module('utilsDirective',[])
         };
 
         scope.toggle = function(index) {
-          if(scope.chairValue == (index + 1)){
-        	  scope.chairValue = index;
-              scope.onChairSelected({chair: index});
-          } else {
-	          scope.chairValue = index + 1;
-	          scope.onChairSelected({chair: index + 1});
-          }
+	        if(index == 0){
+	        	return;
+	        }
+			if(scope.chairValue == (index + 1)){
+				scope.chairValue = index;
+				scope.onChairSelected({chair: index});
+			} else {
+				scope.chairValue = index + 1;
+				scope.onChairSelected({chair: index + 1});
+			}
         };
 
         scope.$watch('chairValue', function(oldVal, newVal) {
-          
         	if (newVal) {
         		updateChairs();
           }
         });
       }
-    }
+    };
   });

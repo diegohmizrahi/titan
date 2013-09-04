@@ -32,8 +32,10 @@ app.directivesModule = angular.module('utilsDirective',[])
     return {
       restrict: 'A',
       template: '<ul class="chair">' +
+      			  '<li class="chairValue">{{chairValue}}</li>' +
                   '<li ng-repeat="chair in chairs" ng-class="chair" ng-click="toggle($index)">' +
                   '</li>' +
+                  
                 '</ul>',
       scope: {
     	chairValue: '=',
@@ -42,7 +44,7 @@ app.directivesModule = angular.module('utilsDirective',[])
         
       },
       link: function (scope, elem, attrs) {
-
+    	  
         var updateChairs = function() {
           scope.chairs = [];
           for (var  i = 0; i < scope.max; i++) {
@@ -51,25 +53,79 @@ app.directivesModule = angular.module('utilsDirective',[])
         };
 
         scope.toggle = function(index) {
-          if(scope.chairValue == (index + 1)){
-        	  scope.chairValue = index;
-              scope.onChairSelected({chair: index});
-          } else {
-	          scope.chairValue = index + 1;
-	          scope.onChairSelected({chair: index + 1});
-          }
+	        if(index == 0){
+	        	return;
+	        }
+			if(scope.chairValue == (index + 1)){
+				scope.chairValue = index;
+				scope.onChairSelected({chair: index});
+			} else {
+				scope.chairValue = index + 1;
+				scope.onChairSelected({chair: index + 1});
+			}
         };
 
         scope.$watch('chairValue', function(oldVal, newVal) {
-          
         	if (newVal) {
         		updateChairs();
           }
         });
       }
-    }
+    };
   });
-app.moviesModule = angular.module('moviesController',[]);
+describe('$httpBasedService', function () {
+  var svc,
+      httpBackend;
+  
+  beforeEach(function (){  
+    //load the module.
+    module('theaterService');
+    
+    //get your service, also get $httpBackend
+    //$httpBackend will be a mock, thanks to angular-mocks.js
+    inject(function($httpBackend, $httpBasedService) {
+      svc = $httpBasedService;      
+      httpBackend = $httpBackend;
+    });
+  });
+  
+  //make sure no expectations were missed in your tests.
+  //(e.g. expectGET or expectPOST)
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
+  });
+
+  it('should send the msg and return the response.', function (){
+    //set up some data for the http call to return and test later.
+    var returnData =  [{"id":1 }] ;
+    
+    //expectGET to make sure this is called once.
+    //httpBackend.expectGET('somthing.json?msg=wee').respond(returnData);
+    httpBackend.expectGET('./resources/json/mock.json').respond(returnData);
+    
+    //create an object with a functio to spy on.
+    var test = {
+      handler: function() {}
+    };
+    
+    //set up a spy for the callback handler.
+    spyOn(test, 'handler');
+    
+    //make the call.
+    var returnedPromise = svc.getTheaters();
+    
+    //use the handler you're spying on to handle the resolution of the promise.
+    returnedPromise.then(test.handler);
+    
+    //flush the backend to "execute" the request to do the expectedGET assertion.
+    httpBackend.flush();
+    
+    //check your spy to see if it's been called with the returned value.  
+    expect(test.handler).toHaveBeenCalledWith(returnData);
+  });
+  
+});app.moviesModule = angular.module('moviesController',[]);
 
 app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
@@ -120,95 +176,140 @@ app.factory('movieService', function($http) {
     	}
     };
 });app.moviesModule = angular.module('stepSelectMovieController',[]);
-app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, movieService) {
 
-	$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
+app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService) {
+
+	$scope.filter = {};
+	var urlParams = "/steps?";
+	$scope.labelButton = "BUY";
 	
-	$scope.updateTheaterSelected = function(theaterSelected){
-		if(theaterSelected.id == 1){
-			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
-		} else {
-			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
-		}
-//		movieService.getMovies().then(function(response) {
-//			$scope.movies = response;
-//		});
-//		theaterService.getMovies($scope.filter.theaterSelected).then(function(){
-//			
-//		});
-		//TODO:28-8 hay que hacer la logica cuando venga del backend
-		$scope.description = "Amadeo vive en un pueblo pequeno y anonimo. Trabaja en un bar, juega al metegol mejor que nadie " +
-				"y esta enamorado de Laura, aunque ella no lo sabe. Su rutina sencilla se desmorona cuando Parpados, un joven del " +
-				"pueblo convertido en el mejor futbolista del mundo, vuelve dispuesto a vengarse de la unica derrota que sufrio " +
-				"en su vida. Con el metegol, el bar y hasta su alma destruidas, Amadeo descubre algo magico: los jugadores de su " +
-				"querido metegol hablan y mucho. Juntos se embarcaran en un viaje lleno de aventuras para salvar a Laura y al " +
-				"pueblo y en el camino convertirse en un verdadero equipo. Pero, hay en el futbol lugar para los milagros.";
-	    
+	/**
+	 * Get all theaters
+	 */ 
+	$scope.getTheaters = function() {
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+		});
+	};
+
+	/**
+	 * Get Movies for theater selected
+	 */
+	$scope.updateTheaterSelected = function(){
+		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
+			$scope.movies = movies;
+			urlParams += "theater="+$scope.filter.theaterSelected.id;
+		});
 		$scope.filter.movieSelected = false;
 		$scope.filter.showTimeSelected = false;
 	};
-
-	$scope.updateMovieSelected = function(movieSelected){
-		if(movieSelected.id == 1 || movieSelected.id == 3){
-			$scope.showTimes = [{"name": "miercoles 20:20"},{"name":"miercoles 22"}];
-		} else {
-			$scope.showTimes = [{"name": "jueves 20:20"},{"name":"sabado 22"}];
-		}
-		$scope.filter.showTimeSelected = false;
-//		movieService.getTime($scope.filter.theaterSelected,$scope.filter.movieSelected).then(function(){
-//			
-//		});
+	
+	/**
+	 * Get showTimes for theater and movie selected
+	 */
+	$scope.updateMovieSelected = function(){
 		
+		var theaterId = $scope.filter.theaterSelected.id;
+		var movieId = $scope.filter.movieSelected.id;
+
+		urlParams += "&movie="+movieId;
+		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+			
+			$scope.showTimes = new Array();
+			
+			for(var i=0;i<showTimes.length;i++){
+				$scope.showTimes.push(showTimes[i].showTime);
+			}
+		});
+
+		for(var i=0;i<$scope.movies.length;i++){
+			if(movieId == $scope.movies[i].id){
+				$scope.description = $scope.movies[i].description;
+				break;
+			}
+		}
+		
+		$scope.filter.showTimeSelected = false;
 	};
 	
+	/**
+	 * Make url to switch screens
+	 */
+	$scope.updateShowTimeSelected = function(){
+		urlParams += "&showTime="+$scope.filter.showTimeSelected.id;
+	};
+	
+	/**
+	 * Replace and navigate url browser
+	 */
+	$scope.navigateUrl = function(){
+		$location.url(urlParams);
+	};
+	
+	$scope.getTheaters();
 });
+
+//app.moviesModule.controller('childController',updateTheaterSelected(function($scope){
+//	//$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
+//	console.log("continua");
+//	
+//		if($scope.id == 1){
+//			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
+//		} else {
+//			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
+//		}
+//		console.log("cambio de teatro");
+//}));
 app.moviesModule = angular.module('stepSelectPaymentController',[]);
 
 app.moviesModule.controller('paymentCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
-	$scope.formaPago = "contado";
+	$scope.methodsPayment = [{"id":1,"name":"Amex"},
+	                         {"id":2,"name":"Cabal"},
+	                         {"id":3,"name":"Mastercard"},
+	                         {"id":4,"name":"Visa"}];
 	
-	$scope.methodsPayment = [{"id":1,"name":"contado"},{"id":2,"name":"tarjeta"}];
-	
-	$scope.updateMethodPayment = function(methodPaymentSelected){
-		
-	};
+	  $scope.lastStep = function (info) {
+	    $scope.shouldBeOpen = true;
+	    console.log(info);
+	  };
+
+	  $scope.close = function () {
+	    $scope.shouldBeOpen = false;
+	  };
+
+	  $scope.items = ['item1', 'item2'];
+
+	  $scope.opts = {
+	    backdropFade: true,
+	    dialogFade:true
+	  };
 });
 app.moviesModule = angular.module('stepSelectSitieController',[]);
 
 app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
-	
-//	 $scope.chair = 1;
-	$scope.sections = new Array();
-	$scope.sizeScreen = 0;
-	$scope.occupiedSession = 0;
+
 	$scope.quantity = 1;
-	//$scope.quantitySelected = {"id":0,"number":0};
-	$scope.sitiesSelected = new Array();
-	//$scope.quantities = [{"id":1,"number":1},{"id":2,"number":2},{"id":3,"number":3},{"id":4,"number":4}];
 	var occupiedOther = "OTHER", occupiedMy = "MY", free = "FREE";  
 	
 	/**
 	 * Create areas of theater
 	 */
-	$scope.createSections = function(){
-     	var sities ={"movie" : { "id":2304, "title": "lalala" }, "theater": {"id": 30,"name": "cinemark palmares" },"showTime": {"schedule": "17:00","id": 234, "left": [{"row": 20,"column": 4}],"center": [
-	{"row": 20,"column": 15,"occupied": [{"row": 1,"column": 4},{"row": 1,"column": 5},{"row": 6,"column": 7},{"row": 3,"column": 2}, {"row": 5,"column": 4}    ]}],"right": [{"row": 20,"column": 3,"occupied": [{"row": 1,"column": 3}]}]}};
-
-		//movieService.getSities().then(function(sities){
-			
-     	renderTypeSection(sities.showTime.left[0], "LEFT");
-     	renderTypeSection(sities.showTime.center[0], "CENTER");
-     	renderTypeSection(sities.showTime.right[0], "RIGHT");
+	$rootScope.createSections = function(sections){
+		
+		$scope.sections = new Array();
+		$scope.sizeScreen = 0;
+		$scope.occupiedSession = 0;
+		$scope.quantity = 1;
+		$scope.sitiesSelected = new Array();
+		$scope.mapSitiesSelected = {};
+		renderTypeSection(sections.left[0], "LEFT");
+     	renderTypeSection(sections.center[0], "CENTER");
+     	renderTypeSection(sections.right[0], "RIGHT");
  
      	$scope.sizeScreen = $scope.sizeScreen + ($scope.sections.length * 20 ) - 20 ;
-
 	};
-	
-//	$scope.fin1 = function(sitiesSelected){
-//		console.log(sitiesSelected);
-//	};
-//	
+
 	/**
 	 * Updated site occupied for purchase
 	 */
@@ -218,11 +319,9 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			$scope.occupiedSession -= 1;
 			sitie.occupied = free;
 			sitie.url = "resources/img/seat_gray.gif";
+			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection];
 			return;
 		}
-//		if($scope.quantitySelected.number <= $scope.occupiedSession){
-//			return;
-//		}
 		if($scope.quantity <= $scope.occupiedSession){
 			return;
 		}
@@ -231,18 +330,12 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			sitie.occupied = occupiedMy;
 			sitie.url = "resources/img/seat_green.gif";
 			$scope.sitiesSelected.push(sitie);
+			$scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection] = sitie;
 			return;
 		}
 		
 	};
-	
-//	$scope.updateSpinner = function(value){
-//		$scope.quantity = value;
-//	};
-	
-	    $scope.saveRatingToServer = function(rating) {
-	      //$window.alert('Rating selected - ' + rating);
-	    };
+
 	/**
 	 * Render section in the teather
 	 */
@@ -287,9 +380,158 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 		$scope.sections.push(section);
 	}
 	
-	$scope.createSections();
 });
-app.moviesModule = angular.module('tplReservationMovieController',[]);
+app.factory('theaterService', function($http) {
+
+	var borrar = "./resources/json/mock.json";
+    return {
+
+	    getTheaters:  function(){
+	        var status = $http.get(borrar).
+	            then(function(response) {
+	            	var aa = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"},{"id":3,"name":"Desde Servicio Este"}];
+	                return aa;
+	            });
+	        return status;
+	    },
+	    
+	    getMovies:  function(theaterId){
+	    	var status = $http.get(borrar).
+	    	then(function(response) {
+	    		var aa;
+	    		if(theaterId == 1){
+	    			aa = [{"id":1,"name": "Jobs","description":"description 1"},{"id":2,"name":"Mi villano Favorito 2","description":"descripcion 2"}];
+	    		} else {
+	    			aa = [{"id":3,"name": "Que paso ayer 1","description":"descripcion 3"},{"id":4,"name":"Metegol","description":"descripcion 4"}];
+	    		}
+	    		return aa;
+	    	});
+	    	return status;
+	    },
+	    
+	    getShowTimeofMovies:  function(theaterId,movieId){
+	    	var status = $http.get(borrar).
+	    	then(function(response) {
+	    			var aa = [
+	    			    {
+	    			        "movie": {
+	    			            "id": 2304,
+	    			            "title": "lalala"
+	    			        },
+	    			        "theater": {
+	    			            "id": 30,
+	    			            "name": "cinemark palmares"
+	    			        },
+	    			        "showTime": {
+	    			            "schedule": "17:00 primnera",
+	    			            "id": 1,
+	    			            "left": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 2,
+	    			                    "occupied": [{
+    			                            "row": 1,
+    			                            "column": 1
+    			                        }],
+	    			                }
+	    			            ],
+	    			            "center": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 20,
+	    			                    "occupied": [
+	    			                        {
+	    			                            "row": 1,
+	    			                            "column": 4
+	    			                        },
+	    			                        {
+	    			                            "row": 1,
+	    			                            "column": 5
+	    			                        },
+	    			                        {
+	    			                            "row": 6,
+	    			                            "column": 7
+	    			                        },
+	    			                        {
+	    			                            "row": 3,
+	    			                            "column": 2
+	    			                        },
+	    			                        {
+	    			                            "row": 5,
+	    			                            "column": 4
+	    			                        }
+	    			                    ]
+	    			                }
+	    			            ],
+	    			            "right": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 3,
+	    			                    "occupied": [
+	    			                        {
+	    			                            "row": 1,
+	    			                            "column": 3
+	    			                        }
+	    			                    ]
+	    			                }
+	    			            ]
+	    			        }
+	    			    },
+	    			    {
+	    			        "movie": {
+	    			            "id": 2304,
+	    			            "title": "lalala"
+	    			        },
+	    			        "theater": {
+	    			            "id": 30,
+	    			            "name": "cinemark palmares"
+	    			        },
+	    			        "showTime": {
+	    			            "schedule": "17:00 segunda",
+	    			            "id": 2,
+	    			            "left": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 4,
+	    			                    "occupied": [{
+    			                            "row": 1,
+    			                            "column": 1
+    			                        }],
+	    			                }
+	    			            ],
+	    			            "center": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 20,
+	    			                    "occupied": [
+	    			                        {
+	    			                            "row": 1,
+	    			                            "column": 4
+	    			                        }
+	    			                    ]
+	    			                }
+	    			            ],
+	    			            "right": [
+	    			                {
+	    			                    "row": 20,
+	    			                    "column": 3,
+	    			                    "occupied": [
+	    			                        {
+	    			                            "row": 1,
+	    			                            "column": 2
+	    			                        }
+	    			                    ]
+	    			                }
+	    			            ]
+	    			        }
+	    			    }
+	    			];
+	    		return aa;
+	    	});
+	    	return status;
+	    }
+    };
+});app.moviesModule = angular.module('tplReservationMovieController',[]);
 
 app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
@@ -300,87 +542,138 @@ app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams,
 });
 app.moviesModule = angular.module('tplStepsController',[]);
 
-app.moviesModule.controller('reservationdddCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
-	
-	var sitiesSelectedA;
-	$scope.filter = {};
-	
-	//$scope.filter.theaterSelected = false;
+
+app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
+
 	$scope.templates =
         [ { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html', state: true}
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
         , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}];
+	$scope.labelButton = "NEXT";
+	$scope.filter = {};
 	
-	$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
-	$scope.movies = [{"id":1,"name": "Que paso ayer 1"},{"id":2,"name":"Metegol"}];
-	$scope.showTimes = [{"id":1,"name": "miercoles 20:20"},{"id":2,"name":"miercoles 22"}];
+	//Only if the url does not have parameters
+	if (!$routeParams.movie) { 
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+		});
+	};
 	
+	
+	//Running when called through the browser url with parameters.
+    //Make the combo box with data
 	if($routeParams.movie && $routeParams.theater && $routeParams.showTime) {
 		
-		for(var i=0;i<$scope.theaters.length;i++){
-			if($scope.theaters[i].id == $routeParams.theater){
-				$scope.filter.theaterSelected = $scope.theaters[0];
-				break;
+		$scope.filter = {};
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+			
+			for(var i=0;i<$scope.theaters.length;i++){
+				if($scope.theaters[i].id == $routeParams.theater){
+					$scope.filter.theaterSelected = $scope.theaters[i];
+					break;
+				}
 			}
-		}
+			theaterService.getMovies($routeParams.theater).then(function(movies){
+				$scope.movies = movies;
+				
+				for(var i=0;i<$scope.movies.length;i++){
+					if($scope.movies[i].id == $routeParams.movie){
+						$scope.filter.movieSelected = $scope.movies[i];
+						$scope.description = $scope.movies[i].description;
+						break;
+					}
+				}
+
+				theaterService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
+					
+					$scope.showTimes = new Array();
+					
+					for(var i=0;i<showTimes.length;i++){
+						$scope.showTimes.push(showTimes[i].showTime);
+					}
+					
+					for(var i=0;i<$scope.showTimes.length;i++){
+						if($scope.showTimes[i].id == $routeParams.showTime){
+							$scope.filter.showTimeSelected = $scope.showTimes[i];
+							break;
+						}
+					}
+				});
+			});
+		});
+	}
+	
+	/**
+	 * Replace and navigate url browser
+	 */
+	$scope.navigateUrl = function(){
+		$scope.templates[1].state = true;
+		$rootScope.createSections($scope.filter.showTimeSelected);
+	};
+
+	/**
+	 * Get Movies for theater selected
+	 */
+	$scope.updateTheaterSelected = function(){
+		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
+			$scope.movies = movies;
+		});
+		$scope.filter.movieSelected = false;
+		$scope.filter.showTimeSelected = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
+	};
+	
+	/**
+	 * Get showTimes for theater and movie selected
+	 */
+	$scope.updateMovieSelected = function(){
+		
+		var theaterId = $scope.filter.theaterSelected.id;
+		var movieId = $scope.filter.movieSelected.id;
+
+		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+			
+			$scope.showTimes = new Array();
+			
+			for(var i=0;i<showTimes.length;i++){
+				$scope.showTimes.push(showTimes[i].showTime);
+			}
+			
+		});
 
 		for(var i=0;i<$scope.movies.length;i++){
-			if($scope.movies[i].id == $routeParams.movie){
-				$scope.filter.movieSelected = $scope.movies[0];
+			if(movieId == $scope.movies[i].id){
+				$scope.description = $scope.movies[i].description;
 				break;
 			}
 		}
 		
-		for(var i=0;i<$scope.showTimes.length;i++){
-			if($scope.showTimes[i].id == $routeParams.showTime){
-				$scope.filter.showTimeSelected = $scope.showTimes[0];
-				break;
-			}
-		}
-		
-		$scope.description = "Amadeo vive en un pueblo pequeno y anonimo. Trabaja en un bar, juega al metegol mejor que nadie " +
-		"y esta enamorado de Laura, aunque ella no lo sabe. Su rutina sencilla se desmorona cuando Parpados, un joven del " +
-		"pueblo convertido en el mejor futbolista del mundo, vuelve dispuesto a vengarse de la unica derrota que sufrio " +
-		"en su vida. Con el metegol, el bar y hasta su alma destruidas, Amadeo descubre algo magico: los jugadores de su " +
-		"querido metegol hablan y mucho. Juntos se embarcaran en un viaje lleno de aventuras para salvar a Laura y al " +
-		"pueblo y en el camino convertirse en un verdadero equipo. Pero, hay en el futbol lugar para los milagros.";
-
-		$scope.templates[1].state = true;
+		$scope.filter.showTimeSelected = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
 	};
 	
-	$scope.fin = function() {
-		console.log($rootScope);
-		console.log($scope);
-		console.log("ddddd");
-	};
-	
-	$scope.fin1 = function(sitiesSelected){
-		//console.log(sitiesSelected);
-//		var test = " Theater: " + $scope.filter.theaterSelected.name + " Movie: " + $scope.filter.movieSelected.name + " Time: " +
-//		$scope.filter.showTimeSelected.name + " Sities: " ;
-//		for(var i=0;i<sitiesSelected.length;i++){
-//			test = test + "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ")";
-//		}
-//		alert(test);
-//		sitiesSelectedA = sitiesSelected;
-		
-		$scope.sitiesSelectedText = "";
-		$scope.quantitySelected = sitiesSelected.length;
-		for(var i=0;i<sitiesSelected.length;i++){
-			$scope.sitiesSelectedText = $scope.sitiesSelectedText + sitiesSelected[i].nameSection  + ": " +  "(" + sitiesSelected[i].row + "," + sitiesSelected[i].column + ") ";
-					
+	/**
+	 * Next step is Select Method Payment
+	 */
+	$scope.nextStep = function(sitiesSelected){
+		$scope.filter.sitiesSelectedText = "";
+		$scope.filter.quantitySelected = 0;
+		for (var key in sitiesSelected) {
+			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
+				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
+			$scope.filter.quantitySelected++;
 		}
 		$scope.templates[2].state = true;
 	};
 	
-	$scope.end = function(methodPaymentSelected){
-		
-		alert("Method Payment: " + methodPaymentSelected.name);
-	};
-	
-	$scope.updateQuantitySelected = function(quantitySelected){
-		$scope.templates[2].state = false;
+	/**
+	 * Last step is Payment
+	 */
+	$scope.lastStep = function(info) {
+		$rootScope.open(info);
 	};
 	
 });
-

@@ -1,43 +1,85 @@
 app.moviesModule = angular.module('stepSelectMovieController',[]);
-app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, movieService) {
 
-	$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
+app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService) {
+
+	$scope.filter = {};
+	var urlParams = "/steps?";
+	$scope.labelButton = "BUY";
 	
-	$scope.updateTheaterSelected = function(theaterSelected){
-		if(theaterSelected.id == 1){
-			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
-		} else {
-			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
-		}
-//		movieService.getMovies().then(function(response) {
-//			$scope.movies = response;
-//		});
-//		theaterService.getMovies($scope.filter.theaterSelected).then(function(){
-//			
-//		});
-		//TODO:28-8 hay que hacer la logica cuando venga del backend
-		$scope.description = "Amadeo vive en un pueblo pequeno y anonimo. Trabaja en un bar, juega al metegol mejor que nadie " +
-				"y esta enamorado de Laura, aunque ella no lo sabe. Su rutina sencilla se desmorona cuando Parpados, un joven del " +
-				"pueblo convertido en el mejor futbolista del mundo, vuelve dispuesto a vengarse de la unica derrota que sufrio " +
-				"en su vida. Con el metegol, el bar y hasta su alma destruidas, Amadeo descubre algo magico: los jugadores de su " +
-				"querido metegol hablan y mucho. Juntos se embarcaran en un viaje lleno de aventuras para salvar a Laura y al " +
-				"pueblo y en el camino convertirse en un verdadero equipo. Pero, hay en el futbol lugar para los milagros.";
-	    
+	/**
+	 * Get all theaters
+	 */ 
+	$scope.getTheaters = function() {
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+		});
+	};
+
+	/**
+	 * Get Movies for theater selected
+	 */
+	$scope.updateTheaterSelected = function(){
+		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
+			$scope.movies = movies;
+			urlParams += "theater="+$scope.filter.theaterSelected.id;
+		});
 		$scope.filter.movieSelected = false;
 		$scope.filter.showTimeSelected = false;
 	};
-
-	$scope.updateMovieSelected = function(movieSelected){
-		if(movieSelected.id == 1 || movieSelected.id == 3){
-			$scope.showTimes = [{"name": "miercoles 20:20"},{"name":"miercoles 22"}];
-		} else {
-			$scope.showTimes = [{"name": "jueves 20:20"},{"name":"sabado 22"}];
-		}
-		$scope.filter.showTimeSelected = false;
-//		movieService.getTime($scope.filter.theaterSelected,$scope.filter.movieSelected).then(function(){
-//			
-//		});
+	
+	/**
+	 * Get showTimes for theater and movie selected
+	 */
+	$scope.updateMovieSelected = function(){
 		
+		var theaterId = $scope.filter.theaterSelected.id;
+		var movieId = $scope.filter.movieSelected.id;
+
+		urlParams += "&movie="+movieId;
+		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+			
+			$scope.showTimes = new Array();
+			
+			for(var i=0;i<showTimes.length;i++){
+				$scope.showTimes.push(showTimes[i].showTime);
+			}
+		});
+
+		for(var i=0;i<$scope.movies.length;i++){
+			if(movieId == $scope.movies[i].id){
+				$scope.description = $scope.movies[i].description;
+				break;
+			}
+		}
+		
+		$scope.filter.showTimeSelected = false;
 	};
 	
+	/**
+	 * Make url to switch screens
+	 */
+	$scope.updateShowTimeSelected = function(){
+		urlParams += "&showTime="+$scope.filter.showTimeSelected.id;
+	};
+	
+	/**
+	 * Replace and navigate url browser
+	 */
+	$scope.navigateUrl = function(){
+		$location.url(urlParams);
+	};
+	
+	$scope.getTheaters();
 });
+
+//app.moviesModule.controller('childController',updateTheaterSelected(function($scope){
+//	//$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
+//	console.log("continua");
+//	
+//		if($scope.id == 1){
+//			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
+//		} else {
+//			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
+//		}
+//		console.log("cambio de teatro");
+//}));
