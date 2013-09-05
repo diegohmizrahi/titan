@@ -1,11 +1,9 @@
-<!-- <script type="text/ng-template" id="resources/tpl/stepSelectMovie.html"> -->
-<!-- <div ng-controller="reservationMovieCtrl"> -->
 <div>
 	<form>
-		<fieldset> <!-- style="width: 70px;"  PUEDE AFECTAR CUANDO ESTE SOLO-->
+		<fieldset> 
 			<legend>Step 1: Buy movie online</legend>
 			<div>
-				<label class="labelMovie">Theater:</label> 
+				<label class="myLabelTitle">Theater:</label> 
 				<select id="stTheater"
 					ng-model="filter.theaterSelected"
 					ng-change="updateTheaterSelected()"
@@ -14,7 +12,7 @@
 				</select>
 			</div>
 			<div >
-				<label class="labelMovie">Movie:</label> 
+				<label class="myLabelTitle">Movie:</label> 
 				<select id="stMovie"
 					ng-model="filter.movieSelected"
 					ng-disabled="!filter.theaterSelected"
@@ -24,7 +22,7 @@
 				</select>
 			</div>
 			<div>
-				<label class="labelMovie">Time:</label> 
+				<label class="myLabelTitle">Time:</label> 
 				<select id="stShowTimes"
 					ng-model="filter.showTimeSelected"
 					ng-disabled="!(filter.theaterSelected && filter.movieSelected)"
@@ -34,16 +32,11 @@
 				</select>
 			</div>
 			<div class="divInfoMovie" ng-show="filter.movieSelected">
-				<label class="labelMovie">Description:</label> 
-				<textarea class="xxlarge" name="textarea" ng-model="description" rows="21" disabled></textarea>
+				<label class="myLabelTitle">Description:</label> 
+				<textarea class="xxlarge" name="textarea" ng-model="description" rows="18" disabled></textarea>
 			</div>
 		</fieldset>
 		 <td><a class="btn btn-success" ng-click="navigateUrl()"
 		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected">{{labelButton}}</a></td>
-<!-- 		 <td><a class="btn" ng-href="#/steps/?movie={{filter.movieSelected.id}}&theater={{filter.theaterSelected.id}}&showTime={{filter.showTimeSelected.id}}" -->
-<!-- 		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected">BUY</a></td> -->
-		 <!-- td><a class="btn" ng-href="#/xxx/?movie=1&theater=1&showTime=1"
-		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected">BUY</a></td-->
 	</form>
 </div>
-<!-- </script>  -->

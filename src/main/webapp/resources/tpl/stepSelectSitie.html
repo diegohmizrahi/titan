@@ -1,19 +1,15 @@
-<!-- <script type="text/ng-template" id="resources/tpl/stepSelectSitie.html"> -->
- <div ng-controller="sitiesCtrl"> <!--  ng-controller="sitiesCtrl"--> 
-	
+ <div ng-controller="sitiesCtrl">
 	<legend>Step 2: Select Site</legend>
-	<div>
-<!-- 		<div><label class="labelQuantity">{{quantity}}</label></div> -->
+	<div id="divQuantity">
 		<div make-chairs chair-value="quantity" max="4" ></div>
 	</div>
-	<div class="divImgCinema">
+	<div id="divImgCinema">
 		<img alt="" src="./resources/img/screen.png" ng-style="{'width': sizeScreen}">
 	</div>
-	<div style="float: left;padding-right: 20px;" ng-repeat="section in sections">
-		<div id="divLeft2" ng-style="{'width': section.size}">
+	<div id="divSectionCinema" ng-repeat="section in sections">
+		<div ng-style="{'width': section.size}">
 			<span class="ng-scope" ng-repeat="sitie in section.sities">
-				<img ng-src="{{sitie.url}}" width="20" height="20"
-				ng-click="updateSitie(sitie)">
+				<img ng-src="{{sitie.url}}" width="20" height="20" ng-click="updateSitie(sitie)">
 			</span>
 		</div>
 	</div>
@@ -21,4 +17,3 @@
 		<a class="btn btn-success" ng-click="nextStep(mapSitiesSelected)" ng-show="quantity == occupiedSession">NEXT</a>
 	</div>
 </div>
-<!--  </script>   -->

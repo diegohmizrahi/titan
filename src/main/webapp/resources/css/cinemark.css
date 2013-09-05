@@ -3,70 +3,88 @@
 */
 legend {
  	color: #FC0606;
+ 	width: initial;
 }
-.gridMovies {
+#iframeTrailer {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+#imgPictureMovie {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	height:310px; 
+	width:209px;	
+}
+#divImgCinema {
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+#divQuantity {
+	margin-left: 30%;
+}
+#divSectionCinema {
 	float: left;
-	width: 1120px;
-	padding: 10px 10px 10px 10px;
+	padding-right: 20px;
 }
-.center {
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.titleMovie {
+.titleMovie { 
 	text-align: center;
 	font-size: 60px;
 	height: 50px;
 	font-family: cursive;
 	color: #1DAB70;
+	padding-top: 30px;
 }
-
-.labelMovie {
+.myLabelTitle {
 	font-size: 20px;
-	color: #B40431;
+	color: #0C5F1F;
 }
-
+.myLabelInfo {
+	color: #FFFFFF;
+}
 .divInfoMovie {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
-
-/**
-* Image number cinema
-*/
-
-.divImgCinema {
-	padding-top: 10px;
-	padding-bottom: 15px;
-}
-/**
-* Box Select Movie
-*/
 .boxSelectMovie {
 	float: left;
 	padding-left: 10px;
 	padding-right: 10px;
 }
-/**
-* Box Select Sitie
-*/
 .boxSelectSitie {
 	float: left;
 	padding-left: 10px;
-	padding-right: 10px;	
+	padding-right: 10px;
+	padding-top: 10px;
 }
-/**
-* Box Select Method Payment
-*/
 .boxSelectMethodPayment {
 	float: left;
 	padding-left: 10px;
-	padding-right: 10px;	
+	padding-right: 10px;
+	padding-top: 10px;	
 	width: 300px;
 }
-
-
-/**
-*
-*/
+.boxDetailMovie {
+	float: left;
+	padding-left: 20px;
+	padding-right: 20px;	
+}
+.boxGridMovie {
+	float: left;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;	
+	width: 70%;
+	text-align: center;
+}
+.boxSelectMovie {
+	float: left;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;	
+}

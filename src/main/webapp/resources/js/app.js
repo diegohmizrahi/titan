@@ -19,6 +19,11 @@ var app = angular.module('cinemarkApp',['utilsDirective','stepSelectPaymentContr
             	$("#error").html(response.data);
             //	return;
             }
+            if (status == 404) {
+            	//$("#error").html("SERVICIO NO DISPONIBLE");
+            	//$("#dialog").dialog();
+            	alert("SERVICIO NO DISPONIBLE");
+            }
             // otherwise
             return $q.reject(response);
 
@@ -42,16 +47,6 @@ app.config(function ($routeProvider,$locationProvider) {
 	    	controller: 'reservationCtrl',
 	    	templateUrl: './resources/tpl/tplReservationMovie.html'
 	    })
-        .when('/movies',
-        {
-            controller: 'moviesCtrl',
-            templateUrl: './resources/tpl/gridMovies.html'
-        })
-//        .when('/xxx',
-//        {
-//            controller: 'reservationdddCtrl',
-//            templateUrl: './resources/tpl/tplSteps.html'
-//        })
         .when('/steps',
         {
             controller: 'stepsCtrl',
@@ -62,15 +57,5 @@ app.config(function ($routeProvider,$locationProvider) {
         	controller: 'detailMovieCtrl',
         	templateUrl: './resources/tpl/detailMovie.html'
        	})
-       	.when('/sities', //esto esta de prueba
-       			{
-       		controller: 'sitiesCtrl',
-       		templateUrl: './resources/tpl/stepSelectSitie.html'
-       			})
-        .when('/reservationMovie', //este es el de los combo box
-        		{
-        	controller: 'reservationMovieCtrl',
-        	templateUrl: './resources/tpl/stepSelectMovie.html'
-        })
         .otherwise({ redirectTo: '/index' });
 });

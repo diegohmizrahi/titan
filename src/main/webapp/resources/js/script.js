@@ -2,28 +2,12 @@ app.moviesModule = angular.module('detailMovieController',[]);
 
 app.moviesModule.controller('detailMovieCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
-//	if($routeParams.idMovie != 0) {
-//		movieService.getMovie($routeParams.idMovie).then(function(movie){
-//			$scope.movie = movie;
-//		});
-//	};
-	
-	$scope.cantidad = 3;
+	//Only if the url have parameters
 	if($routeParams.idMovie != 0) {
-//		$scope.movie = {"name": "Que paso ayer 1", "description": "esta es una breve descripcion de que se trata la pelicula",
-//				"url":"http://imdb-poster.b0.upaiyun.com/000/268/380.jpg!cover?_upt=22d38ae31377737331"};
-//	
-		$scope.movie = {
-		    "id": 3,
-		    "name": "Metegol",
-		    "description": "All Boys espera al ganador entre los Bodegueros y el equipo del Viaducto, en la semifinal. En la otra llave lucharan por un lugar en la final el sorprendente Estudiantes de Buenos Aires milita en la B Metropolitana y es el unico de los cuatro que no es de Primera y San Lorenzo.",
-		    "urlImage": "./resources/img/movies/1.jpg",
-		    "urlTrailer": "http://www.youtube.com/embed/30v_FQxGmaA",
-		    "actors": "Pablo Rago, Miguel Angel Rodriguez, Fabian Gianola, Horacio Fontova",
-		    "genre": "Comedy"
-		};
-	}
-	
+		movieService.getMovie($routeParams.idMovie).then(function(movie){
+			$scope.movie = movie;
+		});
+	};
 });
 
 app.directivesModule = angular.module('utilsDirective',[])
@@ -72,7 +56,51 @@ app.directivesModule = angular.module('utilsDirective',[])
         });
       }
     };
-  });
+  })
+
+//.directive('ngpopup', function($compile) {
+//	return {
+//		restrict: 'C',
+//		scope: {
+//			controller: '='
+//		},
+//		controller: function($scope, $element, $attrs, $templateCache) {
+//			$scope.$on('open_ngpopup', function(e, args) {
+//                if (args.id != $attrs.popupid) return;
+//
+//                var template = $templateCache.get(args.template);
+//                $("#curtain").html($compile(template)($scope)).fadeIn(180);
+//                
+//                $("#curtain .close").bind('click', function() {
+//                    $("#curtain").fadeOut(180, function() {
+//                    	$(this).empty();
+//                    });
+//                    $scope.$parent.$broadcast('didclose_ngpopup', {popupid:$attrs.popupid, controller:$scope.controller});
+//                });
+//            });
+//		}	
+//	}
+//});
+'use strict';
+
+/* Filters */
+
+//angular.module('filters', [])
+//.filter('picUrlAlt', function($http) {
+//  return function(input) {
+//	  //return input ? '\u2713' : '\u2718';
+////	  return "./resources/img/no-picture.jpg";
+//	  return input ? input : "./resources/img/no-picture.jpg";
+//  };
+//})
+//.filter('trailerUrlAlt', function() {
+//	  return function(input) {
+//	   // return input ? '\u2713' : '\u2718';
+//		//  return "./resources/img/no-picture.jpg";
+//		  return input ? input : "./resources/img/no-picture.jpg";
+//	  };
+//	});
+
 describe('$httpBasedService', function () {
   var svc,
       httpBackend;
@@ -129,39 +157,112 @@ describe('$httpBasedService', function () {
 
 app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
-	$scope.movies = [{"id":1, "name": "Que paso ayer 1", "url":"./resources/img/movies/1.jpg"},
-	                 {"id":2, "name":"Metegol", "url": "./resources/img/movies/2.jpg"},
-					 {"id":3, "name": "Que paso ayer 2", "url":"./resources/img/movies/3.jpg"},
-	                 {"id":4, "name":"Metegol 1", "url": "./resources/img/movies/4.jpg"},
-						{"id":5, "name": "Que paso ayer 2", "url":"./resources/img/movies/5.jpg"},
-						{"id":6, "name":"Metegol 1", "url": "./resources/img/movies/6.jpg"}];
+	$scope.moviesList = function(){
+		movieService.getMovies().then(function(movies){
+			$scope.movies = movies;
+		});
+	};
 	
-	
-//	$scope.moviesList = function(){
-//		movieService.getMovies().then(function(movies){
-//			$scope.movies = movies;
-//		});
-//	};
-//	
-//	$scope.moviesList();
+	$scope.moviesList();
 	
 });
 app.factory('movieService', function($http) {
 
+	var borrar = "./resources/json/mock.json";
     return {
 
 	    getMovies:  function(){
-	        var status = $http.get(app.constantsGlobal.REST_MOVIE).
+	        var status = $http.get(borrar).
 	            then(function(response) {
-	                return response.data;
+	               // return response.data;
+	            	var a = [ {
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/1.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		}, 
+	            		{
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/2.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		},
+	            		{
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/3.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		},
+	            		{
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/4.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		},
+	            		{
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/5.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		}]
+	            	return a;
 	            });
 	        return status;
 	    },
     
     	getMovie: function(idMovie){
-    		 var status = $http.get(app.constantsGlobal.REST_MOVIE + '/'+idMovie).
+    		 var status = $http.get(borrar).
 	            then(function(response) {
-	                return response.data;
+	               // return response.data;
+	                var a = {
+	                	      "id": 1,
+		                      "title": "Los indestructibles",
+		                      "imdbId": "aksdjfk",
+		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
+		                      "actors": "Jet Li, Bruce Willis, etc",
+		                      "picUrl": "./resources/img/movies/2.jpg",
+		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
+		                      "genre": "Accion",
+		                      "director": "Sylvester Stallone",
+		                      "year": 2010,
+		                      "cinemaType": "3D"
+	            		};
+	                return a;
 	            });
 	        return status;
     	},
@@ -533,12 +634,28 @@ app.factory('theaterService', function($http) {
     };
 });app.moviesModule = angular.module('tplReservationMovieController',[]);
 
-app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
+app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
 	
 	$scope.templates =
         [ { name: 'filtroSesiones', url: 'resources/tpl/gridMovies.html', state: true}
         , { name: 'tablaSesiones', url: 'resources/tpl/stepSelectMovie.html' , state: true} ];
 	
+	$scope.updateTheaterSelected = function(){
+		$scope.$$childHead.movies = [{"id":1, "name": "Que paso ayer 1", "url":"./resources/img/movies/1.jpg"},
+		                 {"id":2, "name":"Metegol", "url": "./resources/img/movies/2.jpg"}];
+		console.log("dddddddd");
+	};
+	
+	/**
+	 * Get all theaters
+	 */ 
+	$scope.getTheaters = function() {
+		theaterService.getTheaters().then(function(theaters){
+			$scope.theaters = theaters;
+		});
+	};
+	
+	$scope.getTheaters();
 });
 app.moviesModule = angular.module('tplStepsController',[]);
 
