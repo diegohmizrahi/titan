@@ -12,11 +12,7 @@
 				</select>
 			</div>
 			<div>
-				<div>
-					<label class="myLabelTitle" style="float: left;">Movie:</label> 
-					<a id="btnMoreDetail" class="btn btn btn-info" ng-href="#/movies/{{filter.movieSelected.id}}"
-						ng-disabled="!filter.movieSelected">More detail</a>
-				</div>
+				<label class="myLabelTitle">Movie:</label> 
 				<select id="stMovie"
 					ng-model="filter.movieSelected"
 					ng-disabled="!filter.theaterSelected"
@@ -38,6 +34,10 @@
 			<div class="divInfoMovie" ng-show="filter.movieSelected">
 				<label class="myLabelTitle">Description:</label> 
 				<textarea class="xxlarge" name="textarea" ng-model="summary" rows="18" disabled></textarea>
+			</div>
+			<div>
+				<a id="btnMoreDetail" class="btn btn btn-info" ng-href="#/movies/{{filter.movieSelected.id}}"
+						ng-show="filter.movieSelected">See more movie details</a>
 			</div>
 		</fieldset>
 		 <td><a class="btn btn-success" ng-click="navigateUrl()"
