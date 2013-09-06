@@ -43,6 +43,16 @@ legend {
 	float: left;
 	padding-right: 20px;
 }
+#btnMoreDetail {
+	height: 17px;
+	/* margin-left: 10px; */
+	float: right;
+	padding-top: 0px;
+	padding-right: 4px;
+	padding-bottom: 0px;
+	padding-left: 4px;
+}
+
 .titleMovie { 
 	text-align: center;
 	font-size: 60px;

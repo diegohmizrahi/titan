@@ -11,8 +11,12 @@
 					<option style="display:none" value="">Select Theater</option>
 				</select>
 			</div>
-			<div >
-				<label class="myLabelTitle">Movie:</label> 
+			<div>
+				<div>
+					<label class="myLabelTitle" style="float: left;">Movie:</label> 
+					<a id="btnMoreDetail" class="btn btn btn-info" ng-href="#/movies/{{filter.movieSelected.id}}"
+						ng-disabled="!filter.movieSelected">More detail</a>
+				</div>
 				<select id="stMovie"
 					ng-model="filter.movieSelected"
 					ng-disabled="!filter.theaterSelected"
@@ -37,6 +41,6 @@
 			</div>
 		</fieldset>
 		 <td><a class="btn btn-success" ng-click="navigateUrl()"
-		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected">{{labelButton}}</a></td>
+		 ng-show="filter.theaterSelected && filter.movieSelected && filter.showTimeSelected && showButton">BUY</a></td>
 	</form>
 </div>

@@ -3,8 +3,7 @@ app.moviesModule = angular.module('stepSelectMovieController',[]);
 app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService,showTimeService) {
 
 	$scope.filter = {};
-	var urlParams = "/steps?";
-	$scope.labelButton = "BUY";
+	$scope.showButton = true;
 	
 	/**
 	 * Get all theaters
@@ -21,7 +20,6 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	$scope.updateTheaterSelected = function(){
 		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
 			$scope.movies = movies;
-			urlParams += "theater="+$scope.filter.theaterSelected.id;
 		});
 		$scope.filter.movieSelected = false;
 		$scope.filter.showTimeSelected = false;
@@ -35,7 +33,6 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 		var theaterId = $scope.filter.theaterSelected.id;
 		var movieId = $scope.filter.movieSelected.id;
 
-		urlParams += "&movie="+movieId;
 		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
@@ -59,13 +56,15 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	 * Make url to switch screens
 	 */
 	$scope.updateShowTimeSelected = function(){
-		urlParams += "&showTime="+$scope.filter.showTimeSelected.id;
 	};
 	
 	/**
 	 * Replace and navigate url browser
 	 */
 	$scope.navigateUrl = function(){
+		var urlParams = "/steps?theater="+$scope.filter.theaterSelected.id +
+						"&movie="+$scope.filter.movieSelected.id +
+						"&showTime="+$scope.filter.showTimeSelected.id;
 		$location.url(urlParams);
 	};
 	

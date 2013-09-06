@@ -217,8 +217,7 @@ app.moviesModule = angular.module('stepSelectMovieController',[]);
 app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService,showTimeService) {
 
 	$scope.filter = {};
-	var urlParams = "/steps?";
-	$scope.labelButton = "BUY";
+	$scope.showButton = true;
 	
 	/**
 	 * Get all theaters
@@ -235,7 +234,6 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	$scope.updateTheaterSelected = function(){
 		theaterService.getMovies($scope.filter.theaterSelected.id).then(function(movies){
 			$scope.movies = movies;
-			urlParams += "theater="+$scope.filter.theaterSelected.id;
 		});
 		$scope.filter.movieSelected = false;
 		$scope.filter.showTimeSelected = false;
@@ -249,7 +247,6 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 		var theaterId = $scope.filter.theaterSelected.id;
 		var movieId = $scope.filter.movieSelected.id;
 
-		urlParams += "&movie="+movieId;
 		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
@@ -273,13 +270,15 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	 * Make url to switch screens
 	 */
 	$scope.updateShowTimeSelected = function(){
-		urlParams += "&showTime="+$scope.filter.showTimeSelected.id;
 	};
 	
 	/**
 	 * Replace and navigate url browser
 	 */
 	$scope.navigateUrl = function(){
+		var urlParams = "/steps?theater="+$scope.filter.theaterSelected.id +
+						"&movie="+$scope.filter.movieSelected.id +
+						"&showTime="+$scope.filter.showTimeSelected.id;
 		$location.url(urlParams);
 	};
 	
@@ -444,8 +443,8 @@ app.factory('theaterService', function($http) {
 app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
 	
 	$scope.templates =
-        [ { name: 'filtroSesiones', url: 'resources/tpl/gridMovies.html', state: true}
-        , { name: 'tablaSesiones', url: 'resources/tpl/stepSelectMovie.html' , state: true} ];
+        [ { name: 'gridMovies', url: 'resources/tpl/gridMovies.html', state: true}
+        , { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html' , state: true} ];
 	
 	$scope.updateTheaterSelected = function(){
 		$scope.$$childHead.movies = [{"id":1, "name": "Que paso ayer 1", "url":"./resources/img/movies/1.jpg"},
@@ -473,8 +472,8 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
         , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}
         , { name: 'stepPaymentConfirmation', url: 'resources/tpl/stepPaymentConfirmation.html' , state: false}];
-	$scope.labelButton = "NEXT";
 	$scope.filter = {};
+	$scope.showButton = false;
 	
 	//Only if the url does not have parameters
 	if (!$routeParams.movie) { 
@@ -523,6 +522,9 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 							break;
 						}
 					}
+					
+					$scope.templates[1].state = true;
+					$rootScope.createSections($scope.filter.showTimeSelected);
 				});
 			});
 		});
@@ -577,6 +579,13 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.showTimeSelected = false;
 		$scope.templates[1].state = false;
 		$scope.templates[2].state = false;
+	};
+	
+	/**
+	 * Make url to switch screens
+	 */
+	$scope.updateShowTimeSelected = function(){
+		$scope.navigateUrl();
 	};
 	
 	/**

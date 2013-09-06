@@ -8,8 +8,8 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
         , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}
         , { name: 'stepPaymentConfirmation', url: 'resources/tpl/stepPaymentConfirmation.html' , state: false}];
-	$scope.labelButton = "NEXT";
 	$scope.filter = {};
+	$scope.showButton = false;
 	
 	//Only if the url does not have parameters
 	if (!$routeParams.movie) { 
@@ -58,6 +58,9 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 							break;
 						}
 					}
+					
+					$scope.templates[1].state = true;
+					$rootScope.createSections($scope.filter.showTimeSelected);
 				});
 			});
 		});
@@ -112,6 +115,13 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.showTimeSelected = false;
 		$scope.templates[1].state = false;
 		$scope.templates[2].state = false;
+	};
+	
+	/**
+	 * Make url to switch screens
+	 */
+	$scope.updateShowTimeSelected = function(){
+		$scope.navigateUrl();
 	};
 	
 	/**

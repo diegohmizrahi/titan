@@ -1,8 +1,8 @@
 <div> 
  	<div ng-include id="templates[0].name" ng-show="templates[0].state" class="boxSelectMovie" 
-		ng-model="templates"  src="templates[0].url"> <!--  ng-controller="stepsCtrl"> ng-controller="childController"--></div>
+		ng-model="templates"  src="templates[0].url" ></div>
 	<div ng-include id="templates[1].name" ng-show="templates[1].state" class="boxSelectSitie"
-		ng-model="templates" src="templates[1].url" ng-controller="sitiesCtrl"></div>  <!-- style="padding-left: 300px;" -->
+		ng-model="templates" src="templates[1].url" ng-controller="sitiesCtrl"></div>
 	<div ng-include id="templates[2].name" ng-show="templates[2].state"  class="boxSelectMethodPayment"
 		ng-model="templates" src="templates[2].url" ng-controller="paymentCtrl"></div>
 	<div ng-include id="templates[3].name" ng-show="templates[3].state"  class="boxPaymentConfirmation"
