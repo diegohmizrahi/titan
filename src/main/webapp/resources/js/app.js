@@ -1,28 +1,32 @@
-var app = angular.module('cinemarkApp',['utilsDirective','stepSelectPaymentController','tplStepsController','stepSelectMovieController','tplReservationMovieController','moviesController','detailMovieController','stepSelectSitieController'], function ($routeProvider, $locationProvider, $httpProvider) {
+var app = angular.module('cinemarkApp',['stepPaymentConfirmationController','utilsDirective','stepSelectPaymentController',
+                                        'tplStepsController','stepSelectMovieController','tplReservationMovieController',
+                                        'moviesController','detailMovieController','stepSelectSitieController'], 
+                                        function ($routeProvider, $locationProvider, $httpProvider) {
 
     var interceptor = ['$rootScope', '$q', function (scope, $q) {
 
         function success(response) {
-        	$("#error").html("");
             return response;
         }
 
         function error(response) {
             var status = response.status;
 
+            if (status == 0) {
+            	alert("SERVICIO NO DISPONIBLE");
+            }
             if (status == 401) {
                 window.location = "./index.html";
                 return;
             }
             if (status == 400) {
-            	//window.location = "./index.html";
             	$("#error").html(response.data);
-            //	return;
             }
             if (status == 404) {
-            	//$("#error").html("SERVICIO NO DISPONIBLE");
-            	//$("#dialog").dialog();
             	alert("SERVICIO NO DISPONIBLE");
+            }
+            if (status == 500) {
+            	alert("Se produjo un error interno");
             }
             // otherwise
             return $q.reject(response);
@@ -37,6 +41,14 @@ var app = angular.module('cinemarkApp',['utilsDirective','stepSelectPaymentContr
     
     $httpProvider.responseInterceptors.push(interceptor);
 });
+
+
+//app.config(['$httpProvider', function ($httpProvider) {
+//    $httpProvider.defaults.useXDomain = true;
+//    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+// }]);
+
+
 
 //This configures the routes and associates each route with a view and a controller
 app.config(function ($routeProvider,$locationProvider) {

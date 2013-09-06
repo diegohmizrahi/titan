@@ -56,52 +56,10 @@ app.directivesModule = angular.module('utilsDirective',[])
         });
       }
     };
-  })
+  });
 
-//.directive('ngpopup', function($compile) {
-//	return {
-//		restrict: 'C',
-//		scope: {
-//			controller: '='
-//		},
-//		controller: function($scope, $element, $attrs, $templateCache) {
-//			$scope.$on('open_ngpopup', function(e, args) {
-//                if (args.id != $attrs.popupid) return;
-//
-//                var template = $templateCache.get(args.template);
-//                $("#curtain").html($compile(template)($scope)).fadeIn(180);
-//                
-//                $("#curtain .close").bind('click', function() {
-//                    $("#curtain").fadeOut(180, function() {
-//                    	$(this).empty();
-//                    });
-//                    $scope.$parent.$broadcast('didclose_ngpopup', {popupid:$attrs.popupid, controller:$scope.controller});
-//                });
-//            });
-//		}	
-//	}
-//});
-'use strict';
-
-/* Filters */
-
-//angular.module('filters', [])
-//.filter('picUrlAlt', function($http) {
-//  return function(input) {
-//	  //return input ? '\u2713' : '\u2718';
-////	  return "./resources/img/no-picture.jpg";
-//	  return input ? input : "./resources/img/no-picture.jpg";
-//  };
-//})
-//.filter('trailerUrlAlt', function() {
-//	  return function(input) {
-//	   // return input ? '\u2713' : '\u2718';
-//		//  return "./resources/img/no-picture.jpg";
-//		  return input ? input : "./resources/img/no-picture.jpg";
-//	  };
-//	});
-
-describe('$httpBasedService', function () {
+/**
+  describe('$httpBasedService', function () {
   var svc,
       httpBackend;
   
@@ -153,10 +111,13 @@ describe('$httpBasedService', function () {
     expect(test.handler).toHaveBeenCalledWith(returnData);
   });
   
-});app.moviesModule = angular.module('moviesController',[]);
+}); */app.moviesModule = angular.module('moviesController',[]);
 
 app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 	
+	/**
+	 * Get movies
+	 */
 	$scope.moviesList = function(){
 		movieService.getMovies().then(function(movies){
 			$scope.movies = movies;
@@ -168,117 +129,92 @@ app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $sco
 });
 app.factory('movieService', function($http) {
 
-	var borrar = "./resources/json/mock.json";
+	$http.defaults.useXDomain = true;
     return {
 
+    	/**
+    	 * Get all movies
+    	 */
 	    getMovies:  function(){
-	        var status = $http.get(borrar).
+	        var status = $http.get(app.constantsGlobal.REST_MOVIES).
 	            then(function(response) {
-	               // return response.data;
-	            	var a = [ {
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/1.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		}, 
-	            		{
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/2.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		},
-	            		{
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/3.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		},
-	            		{
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/4.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		},
-	            		{
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/5.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		}]
-	            	return a;
+	               return response.data;
 	            });
 	        return status;
 	    },
     
+	    /**
+	     * Get detail of movie passed as argument
+	     */
     	getMovie: function(idMovie){
-    		 var status = $http.get(borrar).
+    		 var status = $http.get(app.constantsGlobal.REST_MOVIES+ "/"+idMovie).
 	            then(function(response) {
-	               // return response.data;
-	                var a = {
-	                	      "id": 1,
-		                      "title": "Los indestructibles",
-		                      "imdbId": "aksdjfk",
-		                      "summary": "La primera parte del filme parte con una operaci n de rescate de The Expendables contra piratas somal es que toman como rehenes a la tripulaci n de un barco estadounidense.",
-		                      "actors": "Jet Li, Bruce Willis, etc",
-		                      "picUrl": "./resources/img/movies/2.jpg",
-		                      "trailerUrl": "http://www.youtube.com/embed/30v_FQxGmaA",
-		                      "genre": "Accion",
-		                      "director": "Sylvester Stallone",
-		                      "year": 2010,
-		                      "cinemaType": "3D"
-	            		};
-	                return a;
+	                return response.data;
 	            });
 	        return status;
-    	},
-    	
-    	getSities: function(){
-    		var urlBorrar = "urldespues";
-    		var status = $http.get(urlBorrar).
-            then(function(response) {
-                return response.data;
-            });
-    		return status;
     	}
     };
-});app.moviesModule = angular.module('stepSelectMovieController',[]);
+});app.factory('paymentsService', function($http) {
 
-app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService) {
+	$http.defaults.useXDomain = true;
+    return {
+
+    	/**
+    	 * Confirm cinema ticket
+    	 */
+    	paymentReservation:  function(info){
+
+    		var stringSities = "";
+    		for (var key in info.sitiesSelected) {
+    			stringSities = stringSities + "&seat="+info.sitiesSelected[key].row+","+
+    							info.sitiesSelected[key].column + "," + info.sitiesSelected[key].nameSection;
+    		}
+    		
+    		var status = $http.post(app.constantsGlobal.REST_PAYMENTS  +
+    				"?schedule="+info.showTimeSelected.id +
+    				"&email="+ info.email +
+    				"&dni="+info.dni +
+    				stringSities).
+            then(function(response) {
+            	return response.data;
+            });
+	        return status;
+	    }
+    };
+});
+app.factory('showTimeService', function($http) {
+
+	$http.defaults.useXDomain = true;
+    return {
+
+    	/**
+    	 * Get showTimes for theater and movie selected
+    	 */
+    	getShowTimeofMovies:  function(theaterId,movieId){
+	    	var status = $http.get(app.constantsGlobal.REST_SHOW_TIMES + "?movie="+ movieId +"&theater="+theaterId).
+	    	then(function(response) {
+	    		return response.data;
+	    	});
+	    	return status;
+	    }
+    };
+});
+app.moviesModule = angular.module('stepPaymentConfirmationController',[]);
+
+app.moviesModule.controller('paymentConfirmationCtrl', function($rootScope,$scope) {
+
+	
+	/**
+	 * Show payment confirmation
+	 */
+	$rootScope.showPaymentConfirmation = function(information){
+		$scope.info = information;
+	};
+	
+});
+app.moviesModule = angular.module('stepSelectMovieController',[]);
+
+app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService,showTimeService) {
 
 	$scope.filter = {};
 	var urlParams = "/steps?";
@@ -314,18 +250,18 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 		var movieId = $scope.filter.movieSelected.id;
 
 		urlParams += "&movie="+movieId;
-		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
 			
 			for(var i=0;i<showTimes.length;i++){
-				$scope.showTimes.push(showTimes[i].showTime);
+				$scope.showTimes.push(showTimes[i]);
 			}
 		});
 
 		for(var i=0;i<$scope.movies.length;i++){
 			if(movieId == $scope.movies[i].id){
-				$scope.description = $scope.movies[i].description;
+				$scope.summary = $scope.movies[i].summary;
 				break;
 			}
 		}
@@ -349,42 +285,29 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	
 	$scope.getTheaters();
 });
-
-//app.moviesModule.controller('childController',updateTheaterSelected(function($scope){
-//	//$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
-//	console.log("continua");
-//	
-//		if($scope.id == 1){
-//			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
-//		} else {
-//			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
-//		}
-//		console.log("cambio de teatro");
-//}));
 app.moviesModule = angular.module('stepSelectPaymentController',[]);
 
-app.moviesModule.controller('paymentCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
+app.moviesModule.controller('paymentCtrl', function($rootScope,$routeParams, $scope, $location,paymentsService) {
 	
 	$scope.methodsPayment = [{"id":1,"name":"Amex"},
 	                         {"id":2,"name":"Cabal"},
 	                         {"id":3,"name":"Mastercard"},
 	                         {"id":4,"name":"Visa"}];
 	
-	  $scope.lastStep = function (info) {
-	    $scope.shouldBeOpen = true;
-	    console.log(info);
-	  };
-
-	  $scope.close = function () {
-	    $scope.shouldBeOpen = false;
-	  };
-
-	  $scope.items = ['item1', 'item2'];
-
-	  $scope.opts = {
-	    backdropFade: true,
-	    dialogFade:true
-	  };
+	
+	/**
+	 * After select method payment then call service paymentReservation
+	 */
+	$scope.lastStep = function () {
+		paymentsService.paymentReservation($scope.filter).then(function(confirmation){
+			
+			$scope.filter.confirmation = new Object();
+			$scope.filter.confirmationCode = confirmation.code;
+			if($scope.$parent.lastStep){
+				$scope.$parent.lastStep($scope.filter);
+			}
+		});
+	};
 });
 app.moviesModule = angular.module('stepSelectSitieController',[]);
 
@@ -392,6 +315,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 
 	$scope.quantity = 1;
 	var occupiedOther = "OTHER", occupiedMy = "MY", free = "FREE";  
+	var sectionLeft = "Left", sectionCenter = "Center", sectionRight = "Right";
 	
 	/**
 	 * Create areas of theater
@@ -404,9 +328,15 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 		$scope.quantity = 1;
 		$scope.sitiesSelected = new Array();
 		$scope.mapSitiesSelected = {};
-		renderTypeSection(sections.left[0], "LEFT");
-     	renderTypeSection(sections.center[0], "CENTER");
-     	renderTypeSection(sections.right[0], "RIGHT");
+		if(sections.left) {
+			renderTypeSection(sections.left, sectionLeft);
+		}
+		if(sections.center) {
+			renderTypeSection(sections.center, sectionCenter);
+		}
+		if(sections.right) {
+			renderTypeSection(sections.right, sectionRight);
+		}
  
      	$scope.sizeScreen = $scope.sizeScreen + ($scope.sections.length * 20 ) - 20 ;
 	};
@@ -441,16 +371,16 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 	 * Render section in the teather
 	 */
 	function renderTypeSection(section, nameSection ){
-		var rowSection = section.row;
-		var columnSection = section.column;
+		var rowSection = section.rows;
+		var columnSection = section.cols;
 		var sitiesTemp = new Array();
 
 		// Map chairs occupied for others
 		var mapOcuppied = {};
-		if(section.occupied) {
-			for(var i=0;i<section.occupied.length;i++){
-				var row = section.occupied[i].row;
-				var column = section.occupied[i].column;
+		if(section.takenSeats) {
+			for(var i=0;i<section.takenSeats.length;i++){
+				var row = section.takenSeats[i].row;
+				var column = section.takenSeats[i].column;
 				mapOcuppied[row+"-"+column] = true;
 			}
 		}
@@ -484,150 +414,27 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 });
 app.factory('theaterService', function($http) {
 
-	var borrar = "./resources/json/mock.json";
+	$http.defaults.useXDomain = true;
     return {
 
+    	/**
+    	 * Get all theaters
+    	 */ 
 	    getTheaters:  function(){
-	        var status = $http.get(borrar).
-	            then(function(response) {
-	            	var aa = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"},{"id":3,"name":"Desde Servicio Este"}];
-	                return aa;
-	            });
+    		var status = $http.get(app.constantsGlobal.REST_THEATERS). 
+            then(function(response) {
+            	return response.data;
+            });
 	        return status;
 	    },
 	    
+	    /**
+		 * Get Movies for theater parameters
+		 */
 	    getMovies:  function(theaterId){
-	    	var status = $http.get(borrar).
+	    	var status = $http.get(app.constantsGlobal.REST_THEATERS + "/" + theaterId + "/movies").
 	    	then(function(response) {
-	    		var aa;
-	    		if(theaterId == 1){
-	    			aa = [{"id":1,"name": "Jobs","description":"description 1"},{"id":2,"name":"Mi villano Favorito 2","description":"descripcion 2"}];
-	    		} else {
-	    			aa = [{"id":3,"name": "Que paso ayer 1","description":"descripcion 3"},{"id":4,"name":"Metegol","description":"descripcion 4"}];
-	    		}
-	    		return aa;
-	    	});
-	    	return status;
-	    },
-	    
-	    getShowTimeofMovies:  function(theaterId,movieId){
-	    	var status = $http.get(borrar).
-	    	then(function(response) {
-	    			var aa = [
-	    			    {
-	    			        "movie": {
-	    			            "id": 2304,
-	    			            "title": "lalala"
-	    			        },
-	    			        "theater": {
-	    			            "id": 30,
-	    			            "name": "cinemark palmares"
-	    			        },
-	    			        "showTime": {
-	    			            "schedule": "17:00 primnera",
-	    			            "id": 1,
-	    			            "left": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 2,
-	    			                    "occupied": [{
-    			                            "row": 1,
-    			                            "column": 1
-    			                        }],
-	    			                }
-	    			            ],
-	    			            "center": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 20,
-	    			                    "occupied": [
-	    			                        {
-	    			                            "row": 1,
-	    			                            "column": 4
-	    			                        },
-	    			                        {
-	    			                            "row": 1,
-	    			                            "column": 5
-	    			                        },
-	    			                        {
-	    			                            "row": 6,
-	    			                            "column": 7
-	    			                        },
-	    			                        {
-	    			                            "row": 3,
-	    			                            "column": 2
-	    			                        },
-	    			                        {
-	    			                            "row": 5,
-	    			                            "column": 4
-	    			                        }
-	    			                    ]
-	    			                }
-	    			            ],
-	    			            "right": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 3,
-	    			                    "occupied": [
-	    			                        {
-	    			                            "row": 1,
-	    			                            "column": 3
-	    			                        }
-	    			                    ]
-	    			                }
-	    			            ]
-	    			        }
-	    			    },
-	    			    {
-	    			        "movie": {
-	    			            "id": 2304,
-	    			            "title": "lalala"
-	    			        },
-	    			        "theater": {
-	    			            "id": 30,
-	    			            "name": "cinemark palmares"
-	    			        },
-	    			        "showTime": {
-	    			            "schedule": "17:00 segunda",
-	    			            "id": 2,
-	    			            "left": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 4,
-	    			                    "occupied": [{
-    			                            "row": 1,
-    			                            "column": 1
-    			                        }],
-	    			                }
-	    			            ],
-	    			            "center": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 20,
-	    			                    "occupied": [
-	    			                        {
-	    			                            "row": 1,
-	    			                            "column": 4
-	    			                        }
-	    			                    ]
-	    			                }
-	    			            ],
-	    			            "right": [
-	    			                {
-	    			                    "row": 20,
-	    			                    "column": 3,
-	    			                    "occupied": [
-	    			                        {
-	    			                            "row": 1,
-	    			                            "column": 2
-	    			                        }
-	    			                    ]
-	    			                }
-	    			            ]
-	    			        }
-	    			    }
-	    			];
-	    		return aa;
+	    		return response.data;
 	    	});
 	    	return status;
 	    }
@@ -643,7 +450,6 @@ app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams,
 	$scope.updateTheaterSelected = function(){
 		$scope.$$childHead.movies = [{"id":1, "name": "Que paso ayer 1", "url":"./resources/img/movies/1.jpg"},
 		                 {"id":2, "name":"Metegol", "url": "./resources/img/movies/2.jpg"}];
-		console.log("dddddddd");
 	};
 	
 	/**
@@ -660,12 +466,13 @@ app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams,
 app.moviesModule = angular.module('tplStepsController',[]);
 
 
-app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
+app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService,showTimeService) {
 
 	$scope.templates =
         [ { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html', state: true}
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
-        , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}];
+        , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}
+        , { name: 'stepPaymentConfirmation', url: 'resources/tpl/stepPaymentConfirmation.html' , state: false}];
 	$scope.labelButton = "NEXT";
 	$scope.filter = {};
 	
@@ -697,17 +504,17 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 				for(var i=0;i<$scope.movies.length;i++){
 					if($scope.movies[i].id == $routeParams.movie){
 						$scope.filter.movieSelected = $scope.movies[i];
-						$scope.description = $scope.movies[i].description;
+						$scope.summary = $scope.movies[i].summary;
 						break;
 					}
 				}
 
-				theaterService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
+				showTimeService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
 					
 					$scope.showTimes = new Array();
 					
 					for(var i=0;i<showTimes.length;i++){
-						$scope.showTimes.push(showTimes[i].showTime);
+						$scope.showTimes.push(showTimes[i]);
 					}
 					
 					for(var i=0;i<$scope.showTimes.length;i++){
@@ -750,19 +557,19 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		var theaterId = $scope.filter.theaterSelected.id;
 		var movieId = $scope.filter.movieSelected.id;
 
-		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
 			
 			for(var i=0;i<showTimes.length;i++){
-				$scope.showTimes.push(showTimes[i].showTime);
+				$scope.showTimes.push(showTimes[i]);
 			}
 			
 		});
 
 		for(var i=0;i<$scope.movies.length;i++){
 			if(movieId == $scope.movies[i].id){
-				$scope.description = $scope.movies[i].description;
+				$scope.summary = $scope.movies[i].summary;
 				break;
 			}
 		}
@@ -778,6 +585,7 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 	$scope.nextStep = function(sitiesSelected){
 		$scope.filter.sitiesSelectedText = "";
 		$scope.filter.quantitySelected = 0;
+		$scope.filter.sitiesSelected = sitiesSelected;
 		for (var key in sitiesSelected) {
 			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
 				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
@@ -790,7 +598,11 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 	 * Last step is Payment
 	 */
 	$scope.lastStep = function(info) {
-		$rootScope.open(info);
+		$scope.templates[0].state = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
+		$scope.templates[3].state = true;
+		$rootScope.showPaymentConfirmation(info);
 	};
 	
 });

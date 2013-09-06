@@ -4,6 +4,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 
 	$scope.quantity = 1;
 	var occupiedOther = "OTHER", occupiedMy = "MY", free = "FREE";  
+	var sectionLeft = "Left", sectionCenter = "Center", sectionRight = "Right";
 	
 	/**
 	 * Create areas of theater
@@ -16,9 +17,15 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 		$scope.quantity = 1;
 		$scope.sitiesSelected = new Array();
 		$scope.mapSitiesSelected = {};
-		renderTypeSection(sections.left[0], "LEFT");
-     	renderTypeSection(sections.center[0], "CENTER");
-     	renderTypeSection(sections.right[0], "RIGHT");
+		if(sections.left) {
+			renderTypeSection(sections.left, sectionLeft);
+		}
+		if(sections.center) {
+			renderTypeSection(sections.center, sectionCenter);
+		}
+		if(sections.right) {
+			renderTypeSection(sections.right, sectionRight);
+		}
  
      	$scope.sizeScreen = $scope.sizeScreen + ($scope.sections.length * 20 ) - 20 ;
 	};
@@ -53,16 +60,16 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 	 * Render section in the teather
 	 */
 	function renderTypeSection(section, nameSection ){
-		var rowSection = section.row;
-		var columnSection = section.column;
+		var rowSection = section.rows;
+		var columnSection = section.cols;
 		var sitiesTemp = new Array();
 
 		// Map chairs occupied for others
 		var mapOcuppied = {};
-		if(section.occupied) {
-			for(var i=0;i<section.occupied.length;i++){
-				var row = section.occupied[i].row;
-				var column = section.occupied[i].column;
+		if(section.takenSeats) {
+			for(var i=0;i<section.takenSeats.length;i++){
+				var row = section.takenSeats[i].row;
+				var column = section.takenSeats[i].column;
 				mapOcuppied[row+"-"+column] = true;
 			}
 		}

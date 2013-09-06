@@ -7,7 +7,7 @@
 	</div>
 	<div class="divInfoMovie">
 		<label class="myLabelTitle">Movie</label> 
-		<label class="myLabelInfo">{{filter.movieSelected.name}}</label>
+		<label class="myLabelInfo">{{filter.movieSelected.title}}</label>
 	</div>
 	<div class="divInfoMovie" style="float: right";>
 		<label class="myLabelTitle">Quantity:</label> 
@@ -15,7 +15,7 @@
 	</div>
 	<div class="divInfoMovie">
 		<label class="myLabelTitle">Show Time</label> 
-		<label class="myLabelInfo">{{filter.showTimeSelected.schedule}}</label>
+		<label class="myLabelInfo">{{filter.showTimeSelected.schedules.time}}</label>
 	</div>
 	<div class="divInfoMovie">
 		<label class="myLabelTitle">Sities:</label> 
@@ -32,11 +32,11 @@
 	</div>
 	<div class="divInfoMovie">
 		<label class="myLabelTitle">Email:</label> 
-		<input type="email" ng-model="filter.email"></input>
+		<input type="text" ng-model="filter.email"></input>
     </div>
     <div class="divInfoMovie">
 		<label class="myLabelTitle">Dni:</label> 
         <input type="text" ng-model="filter.dni"></input>
     </div>
-	<a class="btn btn-success" ng-click="lastStep(filter)" >BUY</a>
+	<a class="btn btn-success" ng-click="lastStep()" ng-show="filter.methodPaymentSelected && filter.email && filter.dni">BUY</a>
 </div>

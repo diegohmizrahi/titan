@@ -17,7 +17,7 @@
 					ng-model="filter.movieSelected"
 					ng-disabled="!filter.theaterSelected"
 					ng-change="updateMovieSelected()"
-					ng-options="movie.name for movie in movies">
+					ng-options="movie.title for movie in movies">
 				<option style="display:none" value="">Select Movie</option>
 				</select>
 			</div>
@@ -27,13 +27,13 @@
 					ng-model="filter.showTimeSelected"
 					ng-disabled="!(filter.theaterSelected && filter.movieSelected)"
 					ng-change="updateShowTimeSelected()"
-					ng-options="showTime.schedule for showTime in showTimes">
+					ng-options="showTime.schedules.time for showTime in showTimes">
 				<option style="display:none" value="">Select Time</option>	
 				</select>
 			</div>
 			<div class="divInfoMovie" ng-show="filter.movieSelected">
 				<label class="myLabelTitle">Description:</label> 
-				<textarea class="xxlarge" name="textarea" ng-model="description" rows="18" disabled></textarea>
+				<textarea class="xxlarge" name="textarea" ng-model="summary" rows="18" disabled></textarea>
 			</div>
 		</fieldset>
 		 <td><a class="btn btn-success" ng-click="navigateUrl()"

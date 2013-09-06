@@ -1,6 +1,6 @@
 app.moviesModule = angular.module('stepSelectMovieController',[]);
 
-app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService) {
+app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routeParams, $scope, $location, theaterService,showTimeService) {
 
 	$scope.filter = {};
 	var urlParams = "/steps?";
@@ -36,18 +36,18 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 		var movieId = $scope.filter.movieSelected.id;
 
 		urlParams += "&movie="+movieId;
-		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
 			
 			for(var i=0;i<showTimes.length;i++){
-				$scope.showTimes.push(showTimes[i].showTime);
+				$scope.showTimes.push(showTimes[i]);
 			}
 		});
 
 		for(var i=0;i<$scope.movies.length;i++){
 			if(movieId == $scope.movies[i].id){
-				$scope.description = $scope.movies[i].description;
+				$scope.summary = $scope.movies[i].summary;
 				break;
 			}
 		}
@@ -71,15 +71,3 @@ app.moviesModule.controller('reservationMovieCtrl', function($rootScope,$routePa
 	
 	$scope.getTheaters();
 });
-
-//app.moviesModule.controller('childController',updateTheaterSelected(function($scope){
-//	//$scope.theaters = [{"id":1,"name": "Palmares"},{"id":2,"name":"Shopping"}];
-//	console.log("continua");
-//	
-//		if($scope.id == 1){
-//			$scope.movies = [{"id":1,"name": "Jobs",},{"id":2,"name":"Mi villano Favorito 2"}];
-//		} else {
-//			$scope.movies = [{"id":3,"name": "Que paso ayer 1"},{"id":4,"name":"Metegol"}];
-//		}
-//		console.log("cambio de teatro");
-//}));

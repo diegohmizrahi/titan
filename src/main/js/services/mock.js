@@ -1,4 +1,5 @@
-describe('$httpBasedService', function () {
+/**
+  describe('$httpBasedService', function () {
   var svc,
       httpBackend;
   
@@ -50,4 +51,4 @@ describe('$httpBasedService', function () {
     expect(test.handler).toHaveBeenCalledWith(returnData);
   });
   
-});
+}); */

@@ -1,12 +1,13 @@
 app.moviesModule = angular.module('tplStepsController',[]);
 
 
-app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService) {
+app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scope, $location,theaterService,showTimeService) {
 
 	$scope.templates =
         [ { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html', state: true}
         , { name: 'stepSelectSitie', url: 'resources/tpl/stepSelectSitie.html' , state: false} 
-        , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}];
+        , { name: 'stepSelectPayment', url: 'resources/tpl/stepSelectPayment.html' , state: false}
+        , { name: 'stepPaymentConfirmation', url: 'resources/tpl/stepPaymentConfirmation.html' , state: false}];
 	$scope.labelButton = "NEXT";
 	$scope.filter = {};
 	
@@ -38,17 +39,17 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 				for(var i=0;i<$scope.movies.length;i++){
 					if($scope.movies[i].id == $routeParams.movie){
 						$scope.filter.movieSelected = $scope.movies[i];
-						$scope.description = $scope.movies[i].description;
+						$scope.summary = $scope.movies[i].summary;
 						break;
 					}
 				}
 
-				theaterService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
+				showTimeService.getShowTimeofMovies($routeParams.theater,$routeParams.movie).then(function(showTimes){
 					
 					$scope.showTimes = new Array();
 					
 					for(var i=0;i<showTimes.length;i++){
-						$scope.showTimes.push(showTimes[i].showTime);
+						$scope.showTimes.push(showTimes[i]);
 					}
 					
 					for(var i=0;i<$scope.showTimes.length;i++){
@@ -91,19 +92,19 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		var theaterId = $scope.filter.theaterSelected.id;
 		var movieId = $scope.filter.movieSelected.id;
 
-		theaterService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
+		showTimeService.getShowTimeofMovies(theaterId,movieId).then(function(showTimes){
 			
 			$scope.showTimes = new Array();
 			
 			for(var i=0;i<showTimes.length;i++){
-				$scope.showTimes.push(showTimes[i].showTime);
+				$scope.showTimes.push(showTimes[i]);
 			}
 			
 		});
 
 		for(var i=0;i<$scope.movies.length;i++){
 			if(movieId == $scope.movies[i].id){
-				$scope.description = $scope.movies[i].description;
+				$scope.summary = $scope.movies[i].summary;
 				break;
 			}
 		}
@@ -119,6 +120,7 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 	$scope.nextStep = function(sitiesSelected){
 		$scope.filter.sitiesSelectedText = "";
 		$scope.filter.quantitySelected = 0;
+		$scope.filter.sitiesSelected = sitiesSelected;
 		for (var key in sitiesSelected) {
 			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
 				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
@@ -131,7 +133,11 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 	 * Last step is Payment
 	 */
 	$scope.lastStep = function(info) {
-		$rootScope.open(info);
+		$scope.templates[0].state = false;
+		$scope.templates[1].state = false;
+		$scope.templates[2].state = false;
+		$scope.templates[3].state = true;
+		$rootScope.showPaymentConfirmation(info);
 	};
 	
 });
