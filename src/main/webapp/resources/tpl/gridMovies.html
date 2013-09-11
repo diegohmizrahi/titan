@@ -1,14 +1,18 @@
-<div class="row" >
-	<span class="ng-scope" ng-repeat="movie in movies">
-		<div class="span3">
-			<div class="thumbnail">
-			     <a ng-href="#/movies/{{movie.id}}" role="button" data-toggle="modal" >
-			     	<img id="imgPictureMovie" alt=""  ng-src="{{movie.picUrl}}">
-			     </a>
-		     	<div class="caption product-detail-center">
-		       		<h5 class="label label-important">{{movie.title}}</h5>
-		     	</div>
-	  	   </div>
-	    </div>
-	</span>
+<div>
+	<div class="row" >
+		<span class="ng-scope" ng-repeat="movie in movies">
+			<div class="span3">
+				<div id="divThumbnailMovie" class="thumbnail">
+				     <a ng-href="#/movies/{{movie.id}}" role="button" data-toggle="modal" >
+				     	<img id="imgPictureMovie" alt=""  ng-src="{{movie.picUrl || no_picture}}">
+				     	<div class="caption product-detail-center">
+				       		<h5 class="label label-important">{{movie.title}}</h5>
+				     	</div>
+				     </a>
+		  	   </div>
+		    </div>
+		</span>
+	</div>
+	<pagination num-pages="noOfPages" current-page="currentPage" on-select-page="pageChanged(page)"></pagination>    
 </div>
+    

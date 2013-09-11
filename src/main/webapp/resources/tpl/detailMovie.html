@@ -36,7 +36,7 @@
 		</div>
 	</div>
 	<div>
-		<img id="imgPictureMovie" alt="" ng-src="{{movie.picUrl}}">
+		<img id="imgPictureMovie" alt="" ng-src="{{movie.picUrl || no_picture}}">
 		<iframe id="iframeTrailer" width="410" height="250"
 			ng-src="{{movie.trailerUrl}}" frameborder="0"
 			allowfullscreen=""></iframe>

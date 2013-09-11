@@ -3,13 +3,15 @@ var app = angular.module('cinemarkApp',['stepPaymentConfirmationController','uti
                                         'moviesController','detailMovieController','stepSelectSitieController'], 
                                         function ($routeProvider, $locationProvider, $httpProvider) {
 
-    var interceptor = ['$rootScope', '$q', function (scope, $q) {
+    var interceptor = ['$rootScope', '$q',function (scope, $q) {
 
         function success(response) {
+        	 $('#divSpinner').hide();
             return response;
         }
 
         function error(response) {
+        	$('#divSpinner').hide();
             var status = response.status;
 
             if (status == 0) {
@@ -42,13 +44,15 @@ var app = angular.module('cinemarkApp',['stepPaymentConfirmationController','uti
     $httpProvider.responseInterceptors.push(interceptor);
 });
 
-
-//app.config(['$httpProvider', function ($httpProvider) {
-//    $httpProvider.defaults.useXDomain = true;
-//    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-// }]);
-
-
+app.config(['$httpProvider', function ($httpProvider) {
+   // $httpProvider.defaults.useXDomain = true;
+   // delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    var spinnerFunction = function (data, headersGetter) {
+        $('#divSpinner').show();
+        return data;
+    };
+    $httpProvider.defaults.transformRequest.push(spinnerFunction);
+ }]);
 
 //This configures the routes and associates each route with a view and a controller
 app.config(function ($routeProvider,$locationProvider) {

@@ -17,7 +17,7 @@
 					ng-model="filter.movieSelected"
 					ng-disabled="!filter.theaterSelected"
 					ng-change="updateMovieSelected()"
-					ng-options="movie.title for movie in movies">
+					ng-options="movie.title +' (' + movie.cinemaType + ')' for movie in movies">
 				<option style="display:none" value="">Select Movie</option>
 				</select>
 			</div>

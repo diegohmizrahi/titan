@@ -85,6 +85,7 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.showTimeSelected = false;
 		$scope.templates[1].state = false;
 		$scope.templates[2].state = false;
+		$scope.open("ddd");
 	};
 	
 	/**
