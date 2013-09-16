@@ -85,7 +85,6 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.showTimeSelected = false;
 		$scope.templates[1].state = false;
 		$scope.templates[2].state = false;
-		$scope.open("ddd");
 	};
 	
 	/**
@@ -134,7 +133,7 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.sitiesSelected = sitiesSelected;
 		for (var key in sitiesSelected) {
 			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
-				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
+				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].col + 1) + ") ";
 			$scope.filter.quantitySelected++;
 		}
 		$scope.templates[2].state = true;

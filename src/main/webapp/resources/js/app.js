@@ -45,8 +45,8 @@ var app = angular.module('cinemarkApp',['stepPaymentConfirmationController','uti
 });
 
 app.config(['$httpProvider', function ($httpProvider) {
-   // $httpProvider.defaults.useXDomain = true;
-   // delete $httpProvider.defaults.headers.common['X-Requested-With'];
+ //   $httpProvider.defaults.useXDomain = true;
+ //   delete $httpProvider.defaults.headers.common['X-Requested-With'];
     var spinnerFunction = function (data, headersGetter) {
         $('#divSpinner').show();
         return data;

@@ -1,5 +1,4 @@
 //var url = "https://localhost:8443/cinemark/resources";
-//var url = "https://localhost:8443/cinemark/resources";
 var url = "https://promocinemark.herokuapp.com/resources";
 app.constantsGlobal={
 

@@ -11,7 +11,7 @@ app.factory('paymentsService', function($http) {
     		var stringSities = "";
     		for (var key in info.sitiesSelected) {
     			stringSities = stringSities + "&seat="+info.sitiesSelected[key].row+","+
-    							info.sitiesSelected[key].column + "," + info.sitiesSelected[key].nameSection;
+    							info.sitiesSelected[key].col + "," + info.sitiesSelected[key].nameSection;
     		}
     		
     		var status = $http.post(app.constantsGlobal.REST_PAYMENTS  +

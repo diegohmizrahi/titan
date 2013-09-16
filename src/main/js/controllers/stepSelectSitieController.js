@@ -1,5 +1,34 @@
 app.moviesModule = angular.module('stepSelectSitieController',[]);
 
+// 12-9 -> Alternative 2
+app.moviesModule.controller('sitiesCtrl2', function($rootScope,$routeParams, $scope, $location,movieService) {
+
+	$scope.quantity = 1;
+
+	/**
+	 * Create areas of theater
+	 */
+	$rootScope.createSections = function(sections){
+		$scope.sections = app.utils.parseSectionCinema(sections);
+		
+	};
+	
+	/**
+	 * Checks whether the button can display see
+	 */
+	$scope.showNext = function(){
+		var count = 0;
+		var isEquals = false;
+		for (var key in $scope.sitiesSelected) {
+			count++;
+		}
+		if(count == $scope.quantity) {
+			isEquals = true;
+		}
+		return isEquals;
+	};
+});
+//@Deprecated 12-9 -> Alternative 1
 app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 
 	$scope.quantity = 1;
@@ -9,7 +38,8 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 	/**
 	 * Create areas of theater
 	 */
-	$rootScope.createSections = function(sections){
+//	$rootScope.createSections = function(sections){
+	$scope.createSections = function(sections){
 		
 		$scope.sections = new Array();
 		$scope.sizeScreen = 0;
@@ -39,7 +69,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			$scope.occupiedSession -= 1;
 			sitie.occupied = free;
 			sitie.url = "resources/img/seat_gray.gif";
-			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection];
+			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.col+"-"+sitie.nameSection];
 			return;
 		}
 		if($scope.quantity <= $scope.occupiedSession){
@@ -50,7 +80,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			sitie.occupied = occupiedMy;
 			sitie.url = "resources/img/seat_green.gif";
 			$scope.sitiesSelected.push(sitie);
-			$scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection] = sitie;
+			$scope.mapSitiesSelected[sitie.row+"-"+sitie.col+"-"+sitie.nameSection] = sitie;
 			return;
 		}
 		
@@ -78,7 +108,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			for(var j=0;j<columnSection;j++){
 				var sitie = new Object();
 				sitie.row = i;
-				sitie.column = j;
+				sitie.col = j;
 				sitie.nameSection = nameSection;
 				if( i+"-"+j in mapOcuppied){
 					sitie.url = "resources/img/seat_red.gif";

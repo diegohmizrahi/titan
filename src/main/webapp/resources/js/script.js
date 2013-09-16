@@ -16,50 +16,209 @@ app.directivesModule = angular.module('utilsDirective',[])
 
 .directive('makeChairs', function () {
     return {
-      restrict: 'A',
-      template: '<ul class="chair">' +
-      			  '<li class="chairValue">{{chairValue}}</li>' +
-                  '<li ng-repeat="chair in chairs" ng-class="chair" ng-click="toggle($index)">' +
-                  '</li>' +
-                  
-                '</ul>',
-      scope: {
-    	chairValue: '=',
-        max: '=',
-        onChairSelected: '&'
-        
-      },
-      link: function (scope, elem, attrs) {
+    	
+    	restrict: 'A',
+    	template: '<ul class="chair">' +
+      			  	'<li class="chairValue">{{chairValue}}</li>' +
+      			  	'<li ng-repeat="chair in chairs" ng-class="chair" ng-click="toggle($index)"></li>' +
+      			  '</ul>',
+		scope: {
+			chairValue: '=',
+			max: '=',
+			onChairSelected: '&'
+		    
+		},
+		link: function (scope, elem, attrs) {
     	  
-        var updateChairs = function() {
-          scope.chairs = [];
-          for (var  i = 0; i < scope.max; i++) {
-        	  scope.chairs.push({filled: i < scope.chairValue, empty: i >= scope.chairValue});
-          }
-        };
-
-        scope.toggle = function(index) {
-	        if(index == 0){
-	        	return;
-	        }
-			if(scope.chairValue == (index + 1)){
-				scope.chairValue = index;
-				scope.onChairSelected({chair: index});
-			} else {
-				scope.chairValue = index + 1;
-				scope.onChairSelected({chair: index + 1});
-			}
-        };
-
-        scope.$watch('chairValue', function(oldVal, newVal) {
-        	if (newVal) {
-        		updateChairs();
-          }
+			/**
+			 * Update view of chairs
+			 */
+	        var updateChairs = function() {
+				scope.chairs = [];
+				for ( var i = 0; i < scope.max; i++) {
+					scope.chairs.push({
+						filled : i < scope.chairValue,
+						empty : i >= scope.chairValue
+					});
+				}
+			};
+	
+			/**
+			 * Rearranges the seats according to the information
+			 */
+			scope.toggle = function(index) {
+				if (index == 0) {
+					return;
+				}
+				if (scope.chairValue == (index + 1)) {
+					scope.chairValue = index;
+					scope.onChairSelected({
+						chair : index
+					});
+				} else {
+					scope.chairValue = index + 1;
+					scope.onChairSelected({
+						chair : index + 1
+					});
+				}
+			};
+	
+			/**
+    		 * Observed a change in variable "chairValue"
+    		 */
+	        scope.$watch('chairValue', function(oldVal, newVal) {
+	        	if (newVal) {
+	        		updateChairs();
+	          }
+	        });
+		}
+    };
+})
+.directive('ngWidth', function() {
+	return function(scope, elem, attrs) {
+	    attrs.$observe('ngWidth', function(width) {
+	        elem.attr('width', width);
+	    });
+	};
+})
+.directive('ngHeight', function() {
+	return function(scope, elem, attrs) {
+	    attrs.$observe('ngHeight', function(height) {
+	        elem.attr('height', height);
         });
-      }
+    };
+}) 
+.directive('cinema', function () {
+    return {
+    	restrict: 'E',
+		template: 
+					'<div id="divImgCinema">' + 
+						'<img alt="" ng-src="{{imgScreen}}"  ng-style="{\'width\': sizeScreen}">' + 
+					'</div>' +
+					'<div id="divSectionCinema" ng-style="{\'padding-right\': section.padding_right}" ng-repeat="section in sections">' + 
+      					'<div ng-style="{\'width\': section.size}">' +
+	    					'<span class="ng-scope" ng-repeat="sitie in section.sities">' +
+	    						'<img ng-src="{{sitie.url}}" ng-width="{{ngSize}}" ng-height="{{ngSize}}" ng-click="updateSitie(sitie)">' +
+	    					'</span>' +
+	    				'</div>' +
+    			   '</div>',
+    	scope: {
+	    	sectors: '=',
+	    	max:'=',
+	    	ngSize:'=',
+	    	selected: '=',
+    	},
+          
+    	link: function (scope, elem, attrs) {
+    	  
+    		//Verifies the existence of the required properties
+    		if(!attrs.imgFree || !attrs.imgSelected || !attrs.imgTaken || !attrs.max ||
+    				!attrs.ngSize || !attrs.sectors || !attrs.selected ) {
+    			throw Error(NOT_POSSESS_ALL_THE_REQUIRED_PROPERTIES);
+    		}
+    		
+    		/**
+    		 * Update view cinema and sities
+    		 */
+    		var updateView = function() {
+    			
+				var sectors = scope.sectors;
+				scope.takenSession = 0;
+				scope.sizeScreen = 0;
+				scope.sections = new Array();
+				scope.selected = {};
+				
+				for(var s=0;s<sectors.length;s++) {
+	    		  
+					var sitiesTemp = new Array();
+				
+					// Map chairs occupied for others
+					var mapTakenSeats = {};
+					if (sectors[s].takenSeats) {
+						for ( var i = 0; i < sectors[s].takenSeats.length; i++) {
+							var row = sectors[s].takenSeats[i].row;
+							var column = sectors[s].takenSeats[i].column;
+							mapTakenSeats[row + "-" + column] = true;
+						}
+					}
+	  		  
+					// Make the seats with their status
+					for(var i=0;i<sectors[s].rows;i++){
+						for ( var j = 0; j < sectors[s].cols; j++) {
+							var sitie = new Object();
+							sitie.row = i;
+							sitie.col = j;
+							sitie.nameSection = sectors[s].name;
+							sitie.url = attrs.imgFree;
+							if (i + "-" + j in mapTakenSeats) {
+								sitie.url = attrs.imgTaken;
+								sitie.taken = takenOther;
+							} else {
+								sitie.url = attrs.imgFree;
+								sitie.taken = free;
+							}
+							sitiesTemp.push(sitie);
+						}
+						
+						scope.sections.sities = sitiesTemp;
+					}
+					
+					//Make the section and their sizes
+					var section = new Object();
+					section.nameSection = sectors[s].name;
+					section.sities = sitiesTemp;
+					section.size = sectors[s].cols * scope.ngSize;
+					section.padding_right = scope.ngSize;
+					scope.sizeScreen += section.size;
+					scope.sections.push(section);
+					
+				}
+				
+				//Adjusts the size of the movie screen to the measure according to cinema
+				scope.sizeScreen = scope.sizeScreen + (scope.sectors.length * scope.ngSize ) - scope.ngSize ;
+				scope.imgScreen = attrs.imgScreen;
+    		};
+    		
+    		var takenOther = "OTHER", takenMy = "MY", free = "FREE";  
+    		/**
+    		 * Updated site occupied for purchase
+    		 */
+			scope.updateSitie = function(sitie){
+
+				if (sitie.taken == takenMy) {
+					scope.takenSession -= 1;
+					sitie.taken = free;
+					sitie.url = attrs.imgFree;
+					delete scope.selected[sitie.row + "-"+ sitie.col + "-"+ sitie.nameSection];
+					return;
+				}
+				if (scope.max <= scope.takenSession) {
+					return;
+				}
+				if (!(sitie.taken == takenOther)) {
+					scope.takenSession += 1;
+					var sitieNew = new Object();
+					sitieNew.row = sitie.row;
+					sitieNew.col = sitie.col;
+					sitieNew.nameSection = sitie.nameSection;
+					scope.selected[sitieNew.row + "-"+ sitieNew.col + "-"+ sitieNew.nameSection] = sitieNew;
+					sitie.taken = takenMy;
+					sitie.url = attrs.imgSelected;
+					return;
+				}
+    		};
+    		
+    		/**
+    		 * Observed a change in variable "sectors"
+    		 */
+    		scope.$watch('sectors', function(oldVal, newVal) {
+	        	if (oldVal) {
+	        		updateView();
+	          }
+	        });
+    	}
     };
   });
-
 /**
   describe('$httpBasedService', function () {
   var svc,
@@ -144,10 +303,16 @@ app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $sco
 	};
 	
 
+	/**
+	 * Observed a change in attribute "currentPage" this element html: pagination
+	 */
 	$scope.$watch('currentPage', function(newPage){
 		$scope.watchPage = newPage;
 	});
 	
+	/**
+	 * Makes change of page
+	 */
 	$scope.pageChanged = function(page) {
 	
 		$scope.callbackPage = page;
@@ -199,7 +364,7 @@ app.factory('movieService', function($http) {
     		var stringSities = "";
     		for (var key in info.sitiesSelected) {
     			stringSities = stringSities + "&seat="+info.sitiesSelected[key].row+","+
-    							info.sitiesSelected[key].column + "," + info.sitiesSelected[key].nameSection;
+    							info.sitiesSelected[key].col + "," + info.sitiesSelected[key].nameSection;
     		}
     		
     		var status = $http.post(app.constantsGlobal.REST_PAYMENTS  +
@@ -342,6 +507,35 @@ app.moviesModule.controller('paymentCtrl', function($rootScope,$routeParams, $sc
 });
 app.moviesModule = angular.module('stepSelectSitieController',[]);
 
+// 12-9 -> Alternative 2
+app.moviesModule.controller('sitiesCtrl2', function($rootScope,$routeParams, $scope, $location,movieService) {
+
+	$scope.quantity = 1;
+
+	/**
+	 * Create areas of theater
+	 */
+	$rootScope.createSections = function(sections){
+		$scope.sections = app.utils.parseSectionCinema(sections);
+		
+	};
+	
+	/**
+	 * Checks whether the button can display see
+	 */
+	$scope.showNext = function(){
+		var count = 0;
+		var isEquals = false;
+		for (var key in $scope.sitiesSelected) {
+			count++;
+		}
+		if(count == $scope.quantity) {
+			isEquals = true;
+		}
+		return isEquals;
+	};
+});
+//@Deprecated 12-9 -> Alternative 1
 app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $scope, $location,movieService) {
 
 	$scope.quantity = 1;
@@ -351,7 +545,8 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 	/**
 	 * Create areas of theater
 	 */
-	$rootScope.createSections = function(sections){
+//	$rootScope.createSections = function(sections){
+	$scope.createSections = function(sections){
 		
 		$scope.sections = new Array();
 		$scope.sizeScreen = 0;
@@ -381,7 +576,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			$scope.occupiedSession -= 1;
 			sitie.occupied = free;
 			sitie.url = "resources/img/seat_gray.gif";
-			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection];
+			delete $scope.mapSitiesSelected[sitie.row+"-"+sitie.col+"-"+sitie.nameSection];
 			return;
 		}
 		if($scope.quantity <= $scope.occupiedSession){
@@ -392,7 +587,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			sitie.occupied = occupiedMy;
 			sitie.url = "resources/img/seat_green.gif";
 			$scope.sitiesSelected.push(sitie);
-			$scope.mapSitiesSelected[sitie.row+"-"+sitie.column+"-"+sitie.nameSection] = sitie;
+			$scope.mapSitiesSelected[sitie.row+"-"+sitie.col+"-"+sitie.nameSection] = sitie;
 			return;
 		}
 		
@@ -420,7 +615,7 @@ app.moviesModule.controller('sitiesCtrl', function($rootScope,$routeParams, $sco
 			for(var j=0;j<columnSection;j++){
 				var sitie = new Object();
 				sitie.row = i;
-				sitie.column = j;
+				sitie.col = j;
 				sitie.nameSection = nameSection;
 				if( i+"-"+j in mapOcuppied){
 					sitie.url = "resources/img/seat_red.gif";
@@ -477,11 +672,6 @@ app.moviesModule.controller('reservationCtrl', function($rootScope,$routeParams,
 	$scope.templates =
         [ { name: 'gridMovies', url: 'resources/tpl/gridMovies.html', state: true}
         , { name: 'stepSelectMovie', url: 'resources/tpl/stepSelectMovie.html' , state: true} ];
-	
-	$scope.updateTheaterSelected = function(){
-		$scope.$$childHead.movies = [{"id":1, "name": "Que paso ayer 1", "url":"./resources/img/movies/1.jpg"},
-		                 {"id":2, "name":"Metegol", "url": "./resources/img/movies/2.jpg"}];
-	};
 	
 	/**
 	 * Get all theaters
@@ -581,7 +771,6 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.showTimeSelected = false;
 		$scope.templates[1].state = false;
 		$scope.templates[2].state = false;
-		$scope.open("ddd");
 	};
 	
 	/**
@@ -630,7 +819,7 @@ app.moviesModule.controller('stepsCtrl', function($rootScope,$routeParams, $scop
 		$scope.filter.sitiesSelected = sitiesSelected;
 		for (var key in sitiesSelected) {
 			$scope.filter.sitiesSelectedText = $scope.filter.sitiesSelectedText + sitiesSelected[key].nameSection  + ": " +  
-				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].column + 1) + ") ";
+				"(" + (sitiesSelected[key].row + 1)+ "," + (sitiesSelected[key].col + 1) + ") ";
 			$scope.filter.quantitySelected++;
 		}
 		$scope.templates[2].state = true;

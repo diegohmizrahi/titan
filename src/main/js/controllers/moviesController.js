@@ -28,10 +28,16 @@ app.moviesModule.controller('moviesCtrl', function($rootScope,$routeParams, $sco
 	};
 	
 
+	/**
+	 * Observed a change in attribute "currentPage" this element html: pagination
+	 */
 	$scope.$watch('currentPage', function(newPage){
 		$scope.watchPage = newPage;
 	});
 	
+	/**
+	 * Makes change of page
+	 */
 	$scope.pageChanged = function(page) {
 	
 		$scope.callbackPage = page;
